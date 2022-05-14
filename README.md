@@ -3,11 +3,12 @@ CSGO 练习模式插件 汉化版
 
 ===========================
 
-此说明文档由RoyZ翻译，仅做介绍搬运
+此说明文档由RoyZ翻译，仅做介绍搬运与部分修改
+
+
 FOR ORIGINAL [EN VERSION](https://github.com/splewis/csgo-practice-mode/)
 
-
-从Github[下载](https://github.com/RoyZ-CSGO/csgo-practice-mode-zh-CN/releases)
+从Github[下载](https://github.com/Jackstar1212/csgo-practice-mode-zh-cn/releases)
 
 ## 功能
 - 如果启用了``sv_grenade_trajectory``，插件将为所有玩家绘制投掷物轨迹。
