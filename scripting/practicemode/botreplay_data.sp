@@ -35,7 +35,7 @@ public int ReplaysMenuHandler(Menu menu, MenuAction action, int param1, int para
     if (StrEqual(buffer, "add_new")) {
       IntToString(GetNextReplayId(), g_ReplayId[client], REPLAY_NAME_LENGTH);
       SetReplayName(g_ReplayId[client], DEFAULT_REPLAY_NAME);
-      PM_Message(client, "Started new replay with id %s", g_ReplayId[client]);
+      PM_Message(client, "回放开始 id %s", g_ReplayId[client]);
 
     } else if (StrContains(buffer, "exit") == 0) {
       ExitReplayMode();
@@ -154,24 +154,6 @@ public void SetReplayName(const char[] id, const char[] newName) {
   g_UpdatedReplayKv = true;
   if (g_ReplaysKv.JumpToKey(id, true)) {
     g_ReplaysKv.SetString("name", newName);
-    g_ReplaysKv.GoBack();
-  }
-  MaybeWriteNewReplayData();
-}
-
-public bool IsReplayFrozen(const char[] id) {
-  int frozen = 0;
-  if (g_ReplaysKv.JumpToKey(id)) {
-    frozen = g_ReplaysKv.GetNum("frozen");
-    g_ReplaysKv.GoBack();
-  }
-  return !!frozen;
-}
-
-public void SetReplayFrozen(const char[] id, bool frozen) {
-  g_UpdatedReplayKv = true;
-  if (g_ReplaysKv.JumpToKey(id, true)) {
-    g_ReplaysKv.SetNum("frozen", frozen);
     g_ReplaysKv.GoBack();
   }
   MaybeWriteNewReplayData();

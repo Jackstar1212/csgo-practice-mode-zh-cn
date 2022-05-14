@@ -30,8 +30,7 @@ forward void PM_OnSettingsRead();
  * @return Plugin_Handled or a higher action to block the save.
  */
 forward Action PM_OnGrenadeSaved(int client, const float origin[3], const float angle[3],
-                                 const char[] name, const float grenadeTrajectory[3], 
-                                 const float grenadeVelocity[3], const int grenadeType);
+                                 const char[] name);
 
 /**
  * Called when a practice mode setting is changed.

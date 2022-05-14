@@ -1,6 +1,6 @@
 public Action Command_LaunchPracticeMode(int client, int args) {
   if (!CanStartPracticeMode(client)) {
-    PM_Message(client, "You cannot start practice mode right now.");
+    PM_Message(client, "您现在不可以启动练习模式");
     return Plugin_Handled;
   }
 
@@ -30,10 +30,10 @@ public Action Command_NoFlash(int client, int args) {
 
   g_ClientNoFlash[client] = !g_ClientNoFlash[client];
   if (g_ClientNoFlash[client]) {
-    PM_Message(client, "Enabled noflash. Use .noflash again to disable.");
+    PM_Message(client, "已启用屏蔽闪光弹效果功能。 再次使用 .noflash 命令以取消");
     RequestFrame(KillFlashEffect, GetClientSerial(client));
   } else {
-    PM_Message(client, "Disabled noflash.");
+    PM_Message(client, "已禁用屏蔽闪光弹功能");
   }
   return Plugin_Handled;
 }
@@ -45,7 +45,7 @@ public Action Command_Time(int client, int args) {
 
   if (!g_RunningTimeCommand[client]) {
     // Start command.
-    PM_Message(client, "When you start moving a timer will run until you stop moving.");
+    PM_Message(client, "当您开始移动时，计时器会同时开始运行，直到您停止移动");
     g_RunningTimeCommand[client] = true;
     g_RunningLiveTimeCommand[client] = false;
     g_TimerType[client] = TimerType_Increasing_Movement;
@@ -64,7 +64,7 @@ public Action Command_Time2(int client, int args) {
 
   if (!g_RunningTimeCommand[client]) {
     // Start command.
-    PM_Message(client, "Type .timer2 to stop the timer again.");
+    PM_Message(client, "再次输入 .timer2 来停止计时器");
     g_RunningTimeCommand[client] = true;
     g_RunningLiveTimeCommand[client] = false;
     g_TimerType[client] = TimerType_Increasing_Manual;
@@ -88,7 +88,7 @@ public Action Command_CountDown(int client, int args) {
     timer_duration = StringToFloat(arg);
   }
 
-  PM_Message(client, "When you start moving a countdown will begin. Use .stop to cancel it.");
+  PM_Message(client, "当您开始移动时，倒计时会开始。使用 .stop 来停用倒计时");
   g_RunningTimeCommand[client] = true;
   g_RunningLiveTimeCommand[client] = false;
   g_TimerType[client] = TimerType_Countdown_Movement;
@@ -112,8 +112,8 @@ public void StopClientTimer(int client) {
   TimerType timer_type = g_TimerType[client];
   if (timer_type == TimerType_Increasing_Manual || timer_type == TimerType_Increasing_Movement) {
     float dt = GetEngineTime() - g_LastTimeCommand[client];
-    PM_Message(client, "Timer result: %.2f seconds", dt);
-    PrintCenterText(client, "Time: %.2f seconds", dt);
+    PM_Message(client, "计数结果: %.2f 秒", dt);
+    PrintCenterText(client, "计数结果: %.2f 秒", dt);
   }
 }
 
@@ -129,7 +129,7 @@ public Action Timer_DisplayClientTimer(Handle timer, int serial) {
       }
       if (time_left >= 0.0) {
         int seconds = RoundToCeil(time_left);
-        PrintCenterText(client, "Time: %d:%2d", seconds / 60, seconds % 60);
+        PrintCenterText(client, "时间: %d:%2d", seconds / 60, seconds % 60);
       } else {
         StopClientTimer(client);
       }
@@ -137,7 +137,7 @@ public Action Timer_DisplayClientTimer(Handle timer, int serial) {
       // call works?
     } else {
       float dt = GetEngineTime() - g_LastTimeCommand[client];
-      PrintCenterText(client, "Time: %.1f seconds", dt);
+      PrintCenterText(client, "时间: %.1f seconds", dt);
     }
     return Plugin_Continue;
   }
@@ -150,7 +150,7 @@ public Action Command_CopyGrenade(int client, int args) {
   }
 
   if (!IsPlayer(client) || args != 1) {
-    PM_Message(client, "Usage: .copy <id>");
+    PM_Message(client, "用法: .copy <id>");
     return Plugin_Handled;
   }
 
@@ -162,9 +162,9 @@ public Action Command_CopyGrenade(int client, int args) {
   if (FindId(id, targetAuth, sizeof(targetAuth))) {
     int newid = CopyGrenade(targetAuth, id, client);
     if (newid != -1) {
-      PM_Message(client, "Copied nade to new id %d", newid);
+      PM_Message(client, "复制投掷物到新id %d", newid);
     } else {
-      PM_Message(client, "Could not find grenade %s from %s", newid, name);
+      PM_Message(client, "无法找到投掷物 %s ，位于 %s", newid, name);
     }
   }
 
@@ -186,7 +186,7 @@ public Action Command_Respawn(int client, int args) {
   GetClientEyeAngles(client, g_SavedRespawnAngles[client]);
   PM_Message(
       client,
-      "Saved respawn point. When you die will you respawn here, use {GREEN}.stop {NORMAL}to cancel.");
+      "已保存出生点。 当您死亡时会于此处重生, 使用 {GREEN}.stop {NORMAL}来取消");
   return Plugin_Handled;
 }
 
@@ -196,7 +196,7 @@ public Action Command_StopRespawn(int client, int args) {
   }
 
   g_SavedRespawnActive[client] = false;
-  PM_Message(client, "Cancelled respawning at your saved position.");
+  PM_Message(client, "已不再从您保存的重生点重生");
   return Plugin_Handled;
 }
 
@@ -260,7 +260,7 @@ public Action Command_FastForward(int client, int args) {
   if (g_FastfowardRequiresZeroVolumeCvar.IntValue != 0) {
     for (int i = 1; i <= MaxClients; i++) {
       if (IsPlayer(i) && g_ClientVolume[i] > 0.01) {
-        PM_Message(client, "All players must turn volume below 0.01 to allow the .ff command.");
+        PM_Message(client, "所有玩家必须将音量调低至 0.01 以下，才可以使用 .ff 命令");
         return Plugin_Handled;
       }
     }
@@ -275,7 +275,7 @@ public Action Command_FastForward(int client, int args) {
   }
 
   // Smokes last around 18 seconds.
-  PM_MessageToAll("Fastforwarding 20 seconds...");
+  PM_MessageToAll("快进 20 秒...");
   SetCvar("host_timescale", 10);
   CreateTimer(20.0, Timer_ResetTimescale);
 
@@ -303,7 +303,7 @@ public Action Command_Repeat(int client, int args) {
   }
 
   if (args < 2) {
-    PM_Message(client, "Usage: .repeat <interval in seconds> <any chat command>");
+    PM_Message(client, "用法: .repeat <间隔（秒）> <任意聊天指令>");
     return Plugin_Handled;
   }
 
@@ -314,7 +314,7 @@ public Action Command_Repeat(int client, int args) {
                    sizeof(fullString))) {
     float time = StringToFloat(timeString);
     if (time <= 0.0) {
-      PM_Message(client, "Usage: .repeat <interval in seconds> <any chat command>");
+      PM_Message(client, "用法: .repeat <间隔（秒）> <任意聊天指令>");
       return Plugin_Handled;
     }
 
@@ -322,8 +322,8 @@ public Action Command_Repeat(int client, int args) {
     FakeClientCommand(client, "say %s", g_RunningRepeatedCommandArg[client]);
     CreateTimer(time, Timer_RepeatCommand, GetClientSerial(client),
                 TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-    PM_Message(client, "Running command every %.1f seconds.", time);
-    PM_Message(client, "Use {GREEN}.stop {NORMAL}when you are done.");
+    PM_Message(client, "间隔 %.1f 秒重复执行命令", time);
+    PM_Message(client, "使用 {GREEN}.stop {NORMAL}来结束命令");
   }
 
   return Plugin_Handled;
@@ -346,7 +346,7 @@ public Action Command_RoundRepeat(int client, int args) {
 
   if (args < 2) {
     PM_Message(client,
-               "Usage: .roundrepeat <delay from round start in seconds> <any chat command>");
+               "用法: .roundrepeat <回合开始多少秒后> <任意聊天指令>");
     return Plugin_Handled;
   }
 
@@ -358,13 +358,13 @@ public Action Command_RoundRepeat(int client, int args) {
     float time = StringToFloat(timeString);
     if (time < 0.0) {
       PM_Message(client,
-                 "Usage: .roundrepeat <delay from round start in seconds> <any chat command>");
+                 "用法: .roundrepeat <回合开始多少秒后> <任意聊天指令>");
       return Plugin_Handled;
     }
 
     g_RunningRepeatedCommand[client] = true;
-    PM_Message(client, "Running command every %.1f seconds after round start.", time);
-    PM_Message(client, "Use {GREEN}.stop {NORMAL}when you are done.");
+    PM_Message(client, "回合开始后间隔 %.1f 秒重复执行命令", time);
+    PM_Message(client, "使用 {GREEN}.stop {NORMAL}来结束命令");
     g_RunningRoundRepeatedCommandDelay[client].Push(time);
     g_RunningRoundRepeatedCommandArg[client].PushString(cmd);
   }
@@ -408,7 +408,7 @@ public Action Command_StopRepeat(int client, int args) {
     g_RunningRepeatedCommand[client] = false;
     g_RunningRoundRepeatedCommandArg[client].Clear();
     g_RunningRoundRepeatedCommandDelay[client].Clear();
-    PM_Message(client, "Cancelled repeating command.");
+    PM_Message(client, "已取消重复指令");
   }
   return Plugin_Handled;
 }
@@ -419,7 +419,7 @@ public Action Command_Delay(int client, int args) {
   }
 
   if (args < 2) {
-    PM_Message(client, "Usage: .delay <interval in seconds> <any chat command>");
+    PM_Message(client, "用法: .delay <间隔（秒）> <任意聊天指令>");
     return Plugin_Handled;
   }
 
@@ -430,7 +430,7 @@ public Action Command_Delay(int client, int args) {
                    sizeof(fullString))) {
     float time = StringToFloat(timeString);
     if (time <= 0.0) {
-      PM_Message(client, "Usage: .repeat <interval in seconds> <any chat command>");
+      PM_Message(client, "用法: .repeat <间隔（秒）> <任意聊天指令>");
       return Plugin_Handled;
     }
 
@@ -548,13 +548,13 @@ static void ChangeSettingArg(int client, const char[] arg, bool enabled) {
   }
 
   if (indexMatches.Length == 0) {
-    PM_Message(client, "No settings matched \"%s\"", arg);
+    PM_Message(client, "没有符合条件 \"%s\" 的设置", arg);
   } else if (indexMatches.Length == 1) {
     if (!ChangeSetting(indexMatches.Get(0), enabled, true)) {
-      PM_Message(client, "That is already enabled.");
+      PM_Message(client, "此设置已经启用");
     }
   } else {
-    PM_Message(client, "Multiple settings matched \"%s\"", arg);
+    PM_Message(client, "多重设置符合条件 \"%s\"", arg);
   }
 
   delete indexMatches;
@@ -588,7 +588,7 @@ public Action Command_God(int client, int args) {
   }
 
   if (!GetCvarIntSafe("sv_cheats")) {
-    PM_Message(client, ".god requires sv_cheats to be enabled.");
+    PM_Message(client, ".god 要求启用 sv_cheats ");
     return Plugin_Handled;
   }
 
@@ -602,7 +602,7 @@ public Action Command_EndRound(int client, int args) {
   }
 
   if (!GetCvarIntSafe("sv_cheats")) {
-    PM_Message(client, ".endround requires sv_cheats to be enabled.");
+    PM_Message(client, ".endround 要求启用 sv_cheats");
     return Plugin_Handled;
   }
 
@@ -623,6 +623,6 @@ public Action Command_Break(int client, int args) {
     AcceptEntityInput(ent, "Break");
   }
 
-  PM_MessageToAll("Broke all breakable entities.");
+  PM_MessageToAll("已破坏所有可破坏的实体");
   return Plugin_Handled;
 }

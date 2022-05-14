@@ -23,7 +23,6 @@
 #pragma newdecls required
 
 bool g_InPracticeMode = false;
-bool g_PracticeModeCanBeAutoStarted = true;
 bool g_PugsetupLoaded = false;
 bool g_CSUtilsLoaded = false;
 bool g_BotMimicLoaded = false;
@@ -251,7 +250,7 @@ Handle g_OnPracticeModeSettingsRead = INVALID_HANDLE;
 // clang-format off
 public Plugin myinfo = {
   name = "CS:GO PracticeMode",
-  author = "splewis",
+  author = "splewis, Chinese translation by Jackstar1212",
   description = "A practice mode that can be launched through the .setup menu",
   version = PLUGIN_VERSION,
   url = "https://github.com/splewis/csgo-practice-mode"
@@ -260,16 +259,13 @@ public Plugin myinfo = {
 
 public void OnPluginStart() {
   g_InPracticeMode = false;
-  g_PracticeModeCanBeAutoStarted = true;
-
   AddCommandListener(Command_TeamJoin, "jointeam");
   AddCommandListener(Command_Noclip, "noclip");
   AddCommandListener(Command_SetPos, "setpos");
 
   // Forwards
-  g_OnGrenadeSaved = CreateGlobalForward(
-      "PM_OnGrenadeSaved", ET_Event, Param_Cell, Param_Array, Param_Array, Param_String, Param_Array, Param_Array, Param_Cell);
-
+  g_OnGrenadeSaved = CreateGlobalForward("PM_OnPracticeModeEnabled", ET_Event, Param_Cell,
+                                         Param_Array, Param_Array, Param_String);
   g_OnPracticeModeDisabled = CreateGlobalForward("PM_OnPracticeModeEnabled", ET_Ignore);
   g_OnPracticeModeEnabled = CreateGlobalForward("PM_OnPracticeModeEnabled", ET_Ignore);
   g_OnPracticeModeSettingChanged = CreateGlobalForward(
@@ -702,8 +698,7 @@ public void OnPluginStart() {
 
   // Remove cheats so sv_cheats isn't required for this:
   RemoveCvarFlag(g_GrenadeTrajectoryCvar, FCVAR_CHEAT);
-  
-  HookEvent("player_disconnect", Event_PlayerDisconnect);
+
   HookEvent("server_cvar", Event_CvarChanged, EventHookMode_Pre);
   HookEvent("player_spawn", Event_PlayerSpawn);
   HookEvent("player_hurt", Event_BotDamageDealtEvent, EventHookMode_Pre);
@@ -858,16 +853,13 @@ public void OnConfigsExecuted() {
 }
 
 public void CheckAutoStart() {
-  // Check for reasons not to autostart
-  if (g_InPracticeMode
-    || g_AutostartCvar.IntValue == 0
-    || !g_PracticeModeCanBeAutoStarted
-    || (g_PugsetupLoaded && PugSetup_GetGameState() != GameState_None)
-  ) {
-    return;
+  // Autostart practicemode if enabled.
+  if (g_AutostartCvar.IntValue != 0 && !g_InPracticeMode) {
+    bool pugsetup_live = g_PugsetupLoaded && PugSetup_GetGameState() != GameState_None;
+    if (!pugsetup_live) {
+      LaunchPracticeMode();
+    }
   }
-
-  LaunchPracticeMode();
 }
 
 public void OnClientDisconnect(int client) {
@@ -878,9 +870,7 @@ public void OnClientDisconnect(int client) {
   }
 
   g_IsPMBot[client] = false;
-}
 
-public Action Event_PlayerDisconnect(Event event, const char[] name, bool dontBroadcast) {
   // If the server empties out, exit practice mode.
   int playerCount = 0;
   for (int i = 0; i <= MaxClients; i++) {
@@ -888,25 +878,16 @@ public Action Event_PlayerDisconnect(Event event, const char[] name, bool dontBr
       playerCount++;
     }
   }
-
-  if (playerCount == 0) {
-    if (g_InPracticeMode) {
-      ExitPracticeMode();
-    }
-    g_PracticeModeCanBeAutoStarted = true;
+  if (playerCount == 0 && g_InPracticeMode) {
+    ExitPracticeMode();
   }
-
-  return Plugin_Continue;
 }
 
 public void OnMapEnd() {
   MaybeWriteNewGrenadeData();
 
-  
   if (g_InPracticeMode) {
-    bool practiceModeCanBeAutoStarted = g_PracticeModeCanBeAutoStarted;
     ExitPracticeMode();
-    g_PracticeModeCanBeAutoStarted = practiceModeCanBeAutoStarted;
   }
 
   Spawns_MapEnd();
@@ -1145,23 +1126,23 @@ public void ReadPracticeSettings() {
         kv.GetString("name", name, sizeof(name));
 
         char enabledString[64];
-        kv.GetString("default", enabledString, sizeof(enabledString), "enabled");
+        kv.GetString("default", enabledString, sizeof(enabledString), PM_ENABLE_STRING);
         bool enabled =
-            StrEqual(enabledString, "enabled", false) || StrEqual(enabledString, "enable", false);
+            StrEqual(enabledString, PM_ENABLE_STRING, false) || StrEqual(enabledString, "enable", false);
 
         bool changeable = (kv.GetNum("changeable", 1) != 0);
 
         // read the enabled cvar list
         ArrayList enabledCvars = new ArrayList(CVAR_NAME_LENGTH);
         ArrayList enabledValues = new ArrayList(CVAR_VALUE_LENGTH);
-        if (kv.JumpToKey("enabled")) {
+        if (kv.JumpToKey(PM_ENABLE_STRING)) {
           ReadCvarKv(kv, enabledCvars, enabledValues);
           kv.GoBack();
         }
 
         ArrayList disabledCvars = new ArrayList(CVAR_NAME_LENGTH);
         ArrayList disabledValues = new ArrayList(CVAR_VALUE_LENGTH);
-        if (kv.JumpToKey("disabled")) {
+        if (kv.JumpToKey(PM_DISABLE_STRING)) {
           ReadCvarKv(kv, disabledCvars, disabledValues);
           kv.GoBack();
         }
@@ -1211,7 +1192,7 @@ public void LaunchPracticeMode() {
     ChangeSetting(i, PM_IsSettingEnabled(i), false, true);
   }
 
-  PM_MessageToAll("Practice mode is now enabled.");
+  PM_MessageToAll("练习模式已启用");
   Call_StartForward(g_OnPracticeModeEnabled);
   Call_Finish();
 }
@@ -1256,7 +1237,7 @@ stock bool ChangeSetting(int index, bool enabled, bool print = true, bool force_
     char enabledString[32];
     GetEnabledString(enabledString, sizeof(enabledString), enabled);
     if (!StrEqual(name, "")) {
-      PM_MessageToAll("%s is now %s.", name, enabledString);
+      PM_MessageToAll("%s 现在已 %s.", name, enabledString);
     }
   }
 
@@ -1297,9 +1278,6 @@ public void ExitPracticeMode() {
   }
 
   g_InPracticeMode = false;
-  // We no longer want prac mode to auto-restart on player spawn (g_AutostartCvar.IntValue == 1).
-  // Will be reset to true when the last player disconnects or plugin is reloaded.
-  g_PracticeModeCanBeAutoStarted = false;
 
   // force turn noclip off for everyone
   for (int i = 1; i <= MaxClients; i++) {
@@ -1310,7 +1288,7 @@ public void ExitPracticeMode() {
   }
 
   ServerCommand("exec sourcemod/practicemode_end.cfg");
-  PM_MessageToAll("Practice mode is now disabled.");
+  PM_MessageToAll("练习模式已禁用");
 }
 
 public Action Timer_GivePlayersMoney(Handle timer) {
@@ -1451,7 +1429,7 @@ public Action Event_SmokeDetonate(Event event, const char[] name, bool dontBroad
   if (!g_InPracticeMode) {
     return;
   }
-  GrenadeDetonateTimerHelper(event, "smoke grenade");
+  GrenadeDetonateTimerHelper(event, "烟雾弹");
 }
 
 public void GrenadeDetonateTimerHelper(Event event, const char[] grenadeName) {
@@ -1466,7 +1444,7 @@ public void GrenadeDetonateTimerHelper(Event event, const char[] grenadeName) {
         float dt = GetEngineTime() - view_as<float>(g_ClientGrenadeThrowTimes[client].Get(i, 1));
         g_ClientGrenadeThrowTimes[client].Erase(i);
         if (GetSetting(client, UserSetting_ShowAirtime)) {
-          PM_Message(client, "Airtime of %s: %.1f seconds", grenadeName, dt);
+          PM_Message(client, "%s的飞行时间: %.1f 秒", grenadeName, dt);
         }
         break;
       }
@@ -1494,10 +1472,10 @@ public void GetTestingFlashInfo(int serial) {
   int client = GetClientFromSerial(serial);
   if (IsPlayer(client) && g_TestingFlash[client]) {
     float flashDuration = GetFlashDuration(client);
-    PM_Message(client, "Flash duration: %.1f seconds", flashDuration);
+    PM_Message(client, "闪光弹致盲效果持续时间为: %.1f 秒", flashDuration);
 
     if (flashDuration < g_FlashEffectiveThresholdCvar.FloatValue) {
-      PM_Message(client, "Ineffective flash");
+      PM_Message(client, "无效的闪光弹");
       CreateTimer(1.0, Timer_FakeGrenadeBack, GetClientSerial(client));
     } else {
       float delay = flashDuration - 1.0;
@@ -1521,12 +1499,12 @@ public Action Event_FreezeEnd(Event event, const char[] name, bool dontBroadcast
 
     if (g_ClientNoFlash[i]) {
       g_ClientNoFlash[i] = false;
-      PM_Message(i, "Disabled noflash on round start.");
+      PM_Message(i, "回合开始时禁用屏蔽闪光弹致盲效果功能");
     }
 
     if (GetEntityMoveType(i) == MOVETYPE_NOCLIP) {
       SetEntityMoveType(i, MOVETYPE_WALK);
-      PM_Message(i, "Disabled noclip on round start.");
+      PM_Message(i, "回合开始时禁用飞行穿墙(noclip)功能");
     }
 
     FreezeEnd_RoundRepeat(i);
@@ -1585,7 +1563,7 @@ public void OnClientSayCommand_Post(int client, const char[] command, const char
       if (CheckCommandAccess(client, "sm_prac", ADMFLAG_CHANGEMAP)) {
         GivePracticeMenu(client);
       } else {
-        PM_Message(client, "You don't have permission to access practicemode.");
+        PM_Message(client, "您没有启动练习模式的权限");
       }
     } else if (StrEqual(chatCommand, ".help")) {
       ShowHelpInfo(client);
@@ -1610,7 +1588,7 @@ public void ShowHelpInfo(int client) {
 public void CheckMOTDAllowed(QueryCookie cookie, int client, ConVarQueryResult result,
                       const char[] cvarName, const char[] cvarValue) {
   if (!StrEqual(cvarValue, "0")) {
-    PrintToChat(client, "You must have \x04cl_disablehtmlmotd 0 \x01to use that command.");
+    PrintToChat(client, "您必须设置 \x04cl_disablehtmlmotd 0 \x01来使用此命令");
   }
 }
 

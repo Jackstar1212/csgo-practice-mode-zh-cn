@@ -3,7 +3,7 @@ stock int CreateBot(int client, bool forceCrouch, const char[] providedName = ""
   if (g_ClientBots[client].Length >= g_MaxPlacedBotsCvar.IntValue) {
     PM_Message(
         client,
-        "You have too many bots (%d) added. Remove some with .deletebot or the .bots menu to add more.",
+        "您添加了太多的BOT(%d)。请使用 .deletebot 或 .bots 菜单来添加或删除BOT.",
         g_ClientBots[client].Length);
     return -1;
   }
@@ -26,7 +26,7 @@ stock int CreateBot(int client, bool forceCrouch, const char[] providedName = ""
 
   int bot = CreateFakeClient(name);
   if (bot <= 0) {
-    PM_Message(client, "Failed to create bot :(");
+    PM_Message(client, "添加BOT失败 :(");
     return -1;
   }
 
@@ -209,7 +209,7 @@ public Action Command_Bot(int client, int args) {
   GetClientEyeAngles(client, g_BotSpawnAngles[bot]);
   GetClientWeapon(client, g_BotSpawnWeapon[bot], CLASS_LENGTH);
   GiveBotParams(bot);
-  PM_Message(client, "Created bot, use .nobot to remove it.");
+  PM_Message(client, "已添加BOT, 使用 .nobot 来移除BOT");
   TemporarilyDisableCollisions(client, bot);
   return Plugin_Handled;
 }
@@ -233,7 +233,7 @@ public Action Command_CTBot(int client, int args) {
   GetClientEyeAngles(client, g_BotSpawnAngles[bot]);
   GetClientWeapon(client, g_BotSpawnWeapon[bot], CLASS_LENGTH);
   GiveBotParams(bot);
-  PM_Message(client, "Created bot, use .nobot to remove it.");
+  PM_Message(client, "已添加BOT, 使用 .nobot 来移除BOT");
   TemporarilyDisableCollisions(client, bot);
   return Plugin_Handled;
 }
@@ -257,7 +257,7 @@ public Action Command_TBot(int client, int args) {
   GetClientEyeAngles(client, g_BotSpawnAngles[bot]);
   GetClientWeapon(client, g_BotSpawnWeapon[bot], CLASS_LENGTH);
   GiveBotParams(bot);
-  PM_Message(client, "Created bot, use .nobot to remove it.");
+  PM_Message(client, "已添加BOT, 使用 .nobot 来移除BOT");
   TemporarilyDisableCollisions(client, bot);
   return Plugin_Handled;
 }
@@ -302,7 +302,7 @@ public Action Command_CrouchBot(int client, int args) {
   GiveBotParams(bot);
 
   TemporarilyDisableCollisions(client, bot);
-  PM_Message(client, "Created bot, use .nobot to remove it.");
+  PM_Message(client, "已添加BOT, 使用 .nobot 来移除BOT");
   return Plugin_Handled;
 }
 
@@ -331,7 +331,7 @@ public Action Command_BotPlace(int client, int args) {
     GiveBotParams(bot);
   }
 
-  PM_Message(client, "Created bot, use .nobot to remove it.");
+  PM_Message(client, "已添加BOT, 使用 .nobot 来移除BOT");
   return Plugin_Handled;
 }
 
@@ -355,7 +355,7 @@ public Action Command_Boost(int client, int args) {
 
   origin[2] += PLAYER_HEIGHT + 4.0;
   TeleportEntity(client, origin, NULL_VECTOR, NULL_VECTOR);
-  PM_Message(client, "Created bot, use .nobot to remove it.");
+  PM_Message(client, "已添加BOT, 使用 .nobot 来移除BOT");
   return Plugin_Handled;
 }
 
@@ -379,7 +379,7 @@ public Action Command_CrouchBoost(int client, int args) {
 
   origin[2] += CROUCH_PLAYER_HEIGHT + 4.0;
   TeleportEntity(client, origin, NULL_VECTOR, NULL_VECTOR);
-  PM_Message(client, "Created bot, use .nobot to remove it.");
+  PM_Message(client, "已添加BOT, 使用 .nobot 来移除BOT");
   return Plugin_Handled;
 }
 
@@ -404,10 +404,10 @@ public Action Command_RemoveBot(int client, int args) {
       KickClientBot(client, botIndex);
       return Plugin_Handled;
     } else {
-      PM_Message(client, "You can only kick your own bots.");
+      PM_Message(client, "您只可以移除您自己添加的BOT");
     }
   } else {
-    PM_Message(client, "No bot found. Aim at the bot you want to remove.");
+    PM_Message(client, "未找到BOT。请瞄准您想要移除的BOT");
   }
 
   return Plugin_Handled;
@@ -433,7 +433,7 @@ public Action Event_BotDamageDealtEvent(Event event, const char[] name, bool don
   if (IsPMBot(victim) && IsPlayer(attacker)) {
     int damage = event.GetInt("dmg_health");
     int postDamageHealth = event.GetInt("health");
-    PM_Message(attacker, "---> %d damage to BOT %N(%d health)", damage, victim, postDamageHealth);
+    PM_Message(attacker, "---> 对 BOT %N 造成 %d 伤害 (剩余 %d HP)", victim, damage, postDamageHealth);
   }
 
   return Plugin_Continue;
@@ -451,14 +451,14 @@ public Action Event_PlayerBlind(Event event, const char[] name, bool dontBroadca
   if (IsPMBot(client)) {
     int owner = GetBotsOwner(client);
     if (IsPlayer(owner)) {
-      PM_Message(owner, "---> %.1f second flash for BOT %N", GetFlashDuration(client), client);
+      PM_Message(owner, "---> 对 BOT %N 造成闪白 %.1f 秒", client, GetFlashDuration(client));
     }
 
     // Did anyone throw a flash recently? If so, they probably care about this bot being blinded.
     float now = GetGameTime();
     for (int i = 1; i <= MaxClients; i++) {
       if (owner != i && IsPlayer(i) && FloatAbs(now - g_LastFlashDetonateTime[i]) < 0.001) {
-        PM_Message(i, "---> %.1f second flash for BOT %N", GetFlashDuration(client), client);
+        PM_Message(i, "---> 对 BOT %N 造成闪白 %.1f 秒", client, GetFlashDuration(client));
       }
     }
   }
@@ -483,36 +483,16 @@ public Action Command_SaveBots(int client, int args) {
   bool hasCurrentBots = IsPMBot(GetClientBot(client));
   if (!hasCurrentBots) {
     // This is mostly just to prevent accidental deletion.
-    PM_Message(client, "You can't save bots when you have none added.");
+    PM_Message(client, "您不能在未添加BOT的状况下保存BOT");
     return Plugin_Handled;
   }
 
   char mapName[PLATFORM_MAX_PATH];
   GetCleanMapName(mapName, sizeof(mapName));
   char path[PLATFORM_MAX_PATH];
-
-  // If there is an argument for this command, we load the bots from a specific file.
-  if (args >= 1) {
-    char filename[128];
-    for (int i = 1; i <= args; i++)
-    {
-        GetCmdArg(i, filename, sizeof(filename));
-    }
-    // Custom bot placements are in a subdirectory.
-    BuildPath(Path_SM, path, sizeof(path), "data/practicemode/bots/%s/%s.cfg", mapName, filename);
-    char dir[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, dir, sizeof(dir), "data/practicemode/bots/%s", mapName);
-    if (!DirExists(dir)) {
-      if (!CreateDirectory(dir, 511))
-        LogError("Failed to create directory %s", dir);
-    }
-  }
-  // Use the default legacy path if no argument has been provided to the command.
-  else {
-    BuildPath(Path_SM, path, sizeof(path), "data/practicemode/bots/%s.cfg", mapName);
-  }
-
+  BuildPath(Path_SM, path, sizeof(path), "data/practicemode/bots/%s.cfg", mapName);
   KeyValues botsKv = new KeyValues("Bots");
+
   int output_index = 0;
   for (int i = 1; i <= MaxClients; i++) {
     if (IsPMBot(i)) {
@@ -541,7 +521,7 @@ public Action Command_SaveBots(int client, int args) {
   }
   delete botsKv;
 
-  PM_MessageToAll("Saved bot spawns.");
+  PM_MessageToAll("已保存BOT生成位置");
   return Plugin_Handled;
 }
 
@@ -553,50 +533,31 @@ public Action Command_LoadBots(int client, int args) {
   char mapName[PLATFORM_MAX_PATH];
   GetCleanMapName(mapName, sizeof(mapName));
   char path[PLATFORM_MAX_PATH];
+  BuildPath(Path_SM, path, sizeof(path), "data/practicemode/bots/%s.cfg", mapName);
 
-  // If there is an argument for this command, we load the bots from a specific file.
-  if (args >= 1) {
-    char filename[128];
-    for (int i = 1; i <= args; i++)
-    {
-        GetCmdArg(i, filename, sizeof(filename));
+  KeyValues botsKv = new KeyValues("Bots");
+  botsKv.ImportFromFile(path);
+  botsKv.GotoFirstSubKey();
+
+  do {
+    char name[MAX_NAME_LENGTH + 1];
+    botsKv.GetString("name", name, sizeof(name));
+    bool crouching = !!botsKv.GetNum("crouching");
+
+    int bot = CreateBot(client, crouching, name);
+    if (bot <= 0) {
+      return Plugin_Handled;
     }
-    // Custom bot placements are in a subdirectory.
-    BuildPath(Path_SM, path, sizeof(path), "data/practicemode/bots/%s/%s.cfg", mapName, filename);
-  }
-  // Use the default legacy path if no argument has been provided to the command.
-  else {
-    BuildPath(Path_SM, path, sizeof(path), "data/practicemode/bots/%s.cfg", mapName);
-  }
+    botsKv.GetVector("origin", g_BotSpawnOrigin[bot], NULL_VECTOR);
+    botsKv.GetVector("angle", g_BotSpawnAngles[bot], NULL_VECTOR);
+    botsKv.GetString("weapon", g_BotSpawnWeapon[bot], 64);
+    g_BotCrouching[bot] = crouching;
+    GiveBotParams(bot);
+  } while (botsKv.GotoNextKey());
 
-  // Check if the file exist on the server and try to load bots from the file.
-  if (FileExists(path)) {
-    KeyValues botsKv = new KeyValues("Bots");
-    botsKv.ImportFromFile(path);
-    botsKv.GotoFirstSubKey();
-
-    do {
-      char name[MAX_NAME_LENGTH + 1];
-      botsKv.GetString("name", name, sizeof(name));
-      bool crouching = !!botsKv.GetNum("crouching");
-
-      int bot = CreateBot(client, crouching, name);
-      if (bot <= 0) {
-        return Plugin_Handled;
-      }
-      botsKv.GetVector("origin", g_BotSpawnOrigin[bot], NULL_VECTOR);
-      botsKv.GetVector("angle", g_BotSpawnAngles[bot], NULL_VECTOR);
-      botsKv.GetString("weapon", g_BotSpawnWeapon[bot], 64);
-      g_BotCrouching[bot] = crouching;
-      GiveBotParams(bot);
-    } while (botsKv.GotoNextKey());
-    delete botsKv;
-    PM_MessageToAll("Loaded bot spawns.");
-    return Plugin_Handled;
-  } else {
-    PM_Message(client, "No botfile found.");
-    return Plugin_Handled;
-  }
+  delete botsKv;
+  PM_MessageToAll("加载BOT生成位置");
+  return Plugin_Handled;
 }
 
 public Action Command_SwapBot(int client, int args) {

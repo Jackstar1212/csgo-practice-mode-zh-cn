@@ -108,10 +108,10 @@ public bool TeleportToSavedGrenadePosition(int client, const char[] id) {
     delay = g_GrenadeLocationsKv.GetFloat("delay");
     TeleportEntity(client, origin, angles, velocity);
     SetEntityMoveType(client, MOVETYPE_WALK);
-    PM_Message(client, "Teleporting to grenade id %s, \"%s\".", id, grenadeName);
+    PM_Message(client, "传送至投掷物 id %s, \"%s\".", id, grenadeName);
 
     if (!StrEqual(description, "")) {
-      PM_Message(client, "Description: %s", description);
+      PM_Message(client, "描述: %s", description);
     }
 
     if (!StrEqual(category, "")) {
@@ -123,11 +123,11 @@ public bool TeleportToSavedGrenadePosition(int client, const char[] id) {
       if (len >= 2 && category[len - 2] == ';') {
         category[len - 2] = '\0';
       }
-      PM_Message(client, "Categories: %s", category);
+      PM_Message(client, "分类: %s", category);
     }
 
     if (delay > 0.0) {
-      PM_Message(client, "Grenade delay: %.1f seconds", delay);
+      PM_Message(client, "投掷物延迟: %.1f 秒", delay);
     }
 
     if (type != GrenadeType_None && GetSetting(client, UserSetting_SwitchToNadeOnSelect)) {

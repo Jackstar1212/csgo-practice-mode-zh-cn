@@ -6,7 +6,7 @@ public Action Command_LastGrenade(int client, int args) {
   int index = g_GrenadeHistoryPositions[client].Length - 1;
   if (index >= 0) {
     TeleportToGrenadeHistoryPosition(client, index);
-    PM_Message(client, "Teleporting back to position %d in grenade history.", index + 1);
+    PM_Message(client, "正在传送回投掷物记录的位置 %d ", index + 1);
   }
 
   return Plugin_Handled;
@@ -46,10 +46,10 @@ public Action Command_GrenadeBack(int client, int args) {
     if (index >= 0 && index < g_GrenadeHistoryPositions[client].Length) {
       g_GrenadeHistoryIndex[client] = index;
       TeleportToGrenadeHistoryPosition(client, g_GrenadeHistoryIndex[client]);
-      PM_Message(client, "Teleporting back to position %d in grenade history.",
+      PM_Message(client, "正在传送回投掷物记录的位置 %d ",
                  g_GrenadeHistoryIndex[client] + 1);
     } else {
-      PM_Message(client, "Your grenade history only goes from 1 to %d.",
+      PM_Message(client, "您的投掷物历史记录仅有 1 到 %d.",
                  g_GrenadeHistoryPositions[client].Length);
     }
     return Plugin_Handled;
@@ -61,7 +61,7 @@ public Action Command_GrenadeBack(int client, int args) {
       g_GrenadeHistoryIndex[client] = 0;
 
     TeleportToGrenadeHistoryPosition(client, g_GrenadeHistoryIndex[client]);
-    PM_Message(client, "Teleporting back to position %d in grenade history.",
+    PM_Message(client, "正在传送回投掷物记录的位置 %d ",
                g_GrenadeHistoryIndex[client] + 1);
   }
 
@@ -74,7 +74,7 @@ public Action Command_SavePos(int client, int args) {
   }
 
   AddGrenadeToHistory(client);
-  PM_Message(client, "Saved position. Use .back to go back to it.");
+  PM_Message(client, "已保存当前位置。使用 .back 命令来返回位置");
   return Plugin_Handled;
 }
 
@@ -89,7 +89,7 @@ public Action Command_GrenadeForward(int client, int args) {
     if (g_GrenadeHistoryIndex[client] >= max)
       g_GrenadeHistoryIndex[client] = max - 1;
     TeleportToGrenadeHistoryPosition(client, g_GrenadeHistoryIndex[client]);
-    PM_Message(client, "Teleporting forward to position %d in grenade history.",
+    PM_Message(client, "正在传送回上一个投掷物记录的位置 %d ",
                g_GrenadeHistoryIndex[client] + 1);
   }
 
@@ -103,7 +103,7 @@ public Action Command_ClearNades(int client, int args) {
 
   ClearArray(g_GrenadeHistoryPositions[client]);
   ClearArray(g_GrenadeHistoryAngles[client]);
-  PM_Message(client, "Grenade history cleared.");
+  PM_Message(client, "已清除投掷物历史记录");
 
   return Plugin_Handled;
 }
@@ -117,11 +117,11 @@ public Action Command_GotoNade(int client, int args) {
   if (args >= 1 && GetCmdArg(1, arg, sizeof(arg))) {
     char id[GRENADE_ID_LENGTH];
     if (!FindGrenade(arg, id) || !TeleportToSavedGrenadePosition(client, arg)) {
-      PM_Message(client, "Grenade id %s not found.", arg);
+      PM_Message(client, "投掷物 id %s 未找到.", arg);
       return Plugin_Handled;
     }
   } else {
-    PM_Message(client, "Usage: .goto <grenadeid>");
+    PM_Message(client, "用法: .goto <投掷物id>");
   }
 
   return Plugin_Handled;
@@ -140,7 +140,7 @@ public Action Command_Grenades(int client, int args) {
     if (type != GrenadeMenuType_Invalid) {
       GiveGrenadeMenu(client, type, 0, data, ids);
     } else {
-      PM_Message(client, "No matching grenades found.");
+      PM_Message(client, "没有找到符合的投掷物");
     }
     delete ids;
 
@@ -166,7 +166,7 @@ public Action Command_Find(int client, int args) {
     GiveGrenadeMenu(client, GrenadeMenuType_MatchingName, 0, arg, null,
                     GrenadeMenuType_MatchingName);
   } else {
-    PM_Message(client, "Usage: .find <arg>");
+    PM_Message(client, "用法: .find <arg>");
   }
 
   return Plugin_Handled;
@@ -183,7 +183,7 @@ public Action Command_GrenadeDescription(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
@@ -191,7 +191,7 @@ public Action Command_GrenadeDescription(int client, int args) {
   GetCmdArgString(description, sizeof(description));
 
   UpdateGrenadeDescription(nadeId, description);
-  PM_Message(client, "Added grenade description.");
+  PM_Message(client, "添加投掷物描述");
   return Plugin_Handled;
 }
 
@@ -206,7 +206,7 @@ public Action Command_RenameGrenade(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
@@ -214,7 +214,7 @@ public Action Command_RenameGrenade(int client, int args) {
   GetCmdArgString(name, sizeof(name));
 
   UpdateGrenadeName(nadeId, name);
-  PM_Message(client, "Updated grenade name.");
+  PM_Message(client, "已更新投掷物名称");
   return Plugin_Handled;
 }
 
@@ -231,12 +231,12 @@ public Action Command_DeleteGrenade(int client, int args) {
   }
 
   if (!CanEditGrenade(client, StringToInt(grenadeIdStr))) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
   DeleteGrenadeFromKv(grenadeIdStr);
-  PM_Message(client, "Deleted grenade id %s", grenadeIdStr);
+  PM_Message(client, "已删除投掷物 id %s", grenadeIdStr);
   return Plugin_Handled;
 }
 
@@ -250,7 +250,7 @@ public Action Command_SaveGrenade(int client, int args) {
   TrimString(name);
 
   if (StrEqual(name, "")) {
-    PM_Message(client, "Usage: .save <name>");
+    PM_Message(client, "用法: .save <名称>");
     return Plugin_Handled;
   }
 
@@ -258,19 +258,19 @@ public Action Command_SaveGrenade(int client, int args) {
   GetClientAuthId(client, AUTH_METHOD, auth, sizeof(auth));
   char grenadeId[GRENADE_ID_LENGTH];
   if (FindGrenadeByName(auth, name, grenadeId)) {
-    PM_Message(client, "You have already used that name.");
+    PM_Message(client, "您已经使用了该名称");
     return Plugin_Handled;
   }
 
   int max_saved_grenades = g_MaxGrenadesSavedCvar.IntValue;
   if (max_saved_grenades > 0 && CountGrenadesForPlayer(auth) >= max_saved_grenades) {
-    PM_Message(client, "You have reached the maximum number of grenades you can save (%d).",
+    PM_Message(client, "您已经达到了您可以存储的最大投掷物记录数量 (%d).",
                max_saved_grenades);
     return Plugin_Handled;
   }
 
   if (GetEntityMoveType(client) == MOVETYPE_NOCLIP) {
-    PM_Message(client, "You can't save grenades while noclipped.");
+    PM_Message(client, "您不可以在飞行穿墙模式下保存投掷物记录");
     return Plugin_Handled;
   }
 
@@ -288,7 +288,7 @@ public Action Command_SaveGrenade(int client, int args) {
   if (grenadeType != GrenadeType_None && GetVectorDistance(origin, grenadeOrigin) >= 500.0) {
     PM_Message(
         client,
-        "{LIGHT_RED}Warning: {NORMAL}your saved grenade lineup is very far from how your last grenade was thrown. If .throw doesn't work, manually throw the grenade at the linup and type .update to fix it.");
+        "{LIGHT_RED}警告: {NORMAL}您保存的投掷物配置与您上次投掷投掷物时相差甚远。如果 .throw 命令不能正常工作, 请在配置中手动投掷投掷物并输入 .update 来修复它");
   }
 
   Action ret = Plugin_Continue;
@@ -297,9 +297,6 @@ public Action Command_SaveGrenade(int client, int args) {
   Call_PushArray(origin, sizeof(origin));
   Call_PushArray(angles, sizeof(angles));
   Call_PushString(name);
-  Call_PushArray(grenadeOrigin, sizeof(grenadeOrigin));
-  Call_PushArray(grenadeVelocity, sizeof(grenadeVelocity));
-  Call_PushCell(grenadeType);
   Call_Finish(ret);
 
   if (ret < Plugin_Handled) {
@@ -308,7 +305,7 @@ public Action Command_SaveGrenade(int client, int args) {
     g_CurrentSavedGrenadeId[client] = nadeId;
     PM_Message(
         client,
-        "Saved grenade position (id %d). Type .desc <description> to add a description or .delete to delete this position.",
+        "已保存投掷物位置 (id %d)。输入 .desc <description> 来添加描述或者输入 .delete 来删除这个位置",
         nadeId);
 
     if (g_CSUtilsLoaded) {
@@ -317,11 +314,11 @@ public Action Command_SaveGrenade(int client, int args) {
         GrenadeTypeString(g_LastGrenadeType[client], grenadeName, sizeof(grenadeName));
         PM_Message(
             client,
-            "Saved %s throw. Use .clearthrow or .savethrow to change the grenade parameters.",
+            "已保存 %s 的投掷. 使用 .clearthrow 或 .savethrow 命令来改变投掷物参数",
             grenadeName);
       } else {
         PM_Message(client,
-                   "No grenade throw parameters saved. Throw it and use .savethrow to save them.");
+                   "没有保存的投掷物参数。请投掷投掷物并使用 .savethrow 来保存它们");
       }
     }
   }
@@ -341,12 +338,12 @@ public Action Command_MoveGrenade(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
   if (GetEntityMoveType(client) == MOVETYPE_NOCLIP) {
-    PM_Message(client, "You can't move grenades while noclipped.");
+    PM_Message(client, "您不能在飞行穿墙模式下移动投掷物");
     return Plugin_Handled;
   }
 
@@ -355,7 +352,7 @@ public Action Command_MoveGrenade(int client, int args) {
   GetClientAbsOrigin(client, origin);
   GetClientEyeAngles(client, angles);
   SetClientGrenadeVectors(nadeId, origin, angles);
-  PM_Message(client, "Updated grenade position.");
+  PM_Message(client, "已更新投掷物位置");
   return Plugin_Handled;
 }
 
@@ -365,7 +362,7 @@ public Action Command_SaveThrow(int client, int args) {
   }
 
   if (!g_CSUtilsLoaded) {
-    PM_Message(client, "You need the csutils plugin installed to use that command.");
+    PM_Message(client, "你需要安装 csutils 插件来使用此命令");
     return Plugin_Handled;
   }
 
@@ -375,13 +372,13 @@ public Action Command_SaveThrow(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
   SetClientGrenadeParameters(nadeId, g_LastGrenadeType[client], g_LastGrenadeOrigin[client],
                              g_LastGrenadeVelocity[client]);
-  PM_Message(client, "Updated grenade throw parameters.");
+  PM_Message(client, "已更新投掷物参数");
   g_LastGrenadeType[client] = GrenadeType_None;
   return Plugin_Handled;
 }
@@ -397,12 +394,12 @@ public Action Command_UpdateGrenade(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
   if (GetEntityMoveType(client) == MOVETYPE_NOCLIP) {
-    PM_Message(client, "You can't update grenades while noclipped.");
+    PM_Message(client, "您不能在飞行穿墙模式下更新投掷物记录");
     return Plugin_Handled;
   }
 
@@ -419,9 +416,9 @@ public Action Command_UpdateGrenade(int client, int args) {
   }
 
   if (updatedParameters) {
-    PM_Message(client, "Updated grenade position and throwing parameters.");
+    PM_Message(client, "已更新投掷物记录与投掷物参数");
   } else {
-    PM_Message(client, "Updated grenade position.");
+    PM_Message(client, "已更新投掷物位置");
   }
 
   g_LastGrenadeType[client] = GrenadeType_None;
@@ -434,12 +431,12 @@ public Action Command_SetDelay(int client, int args) {
   }
 
   if (!g_CSUtilsLoaded) {
-    PM_Message(client, "You need the csutils plugin installed to use that command.");
+    PM_Message(client, "你需要安装 csutils 插件来使用此命令");
     return Plugin_Handled;
   }
 
   if (args < 1) {
-    PM_Message(client, "Usage: .delay <duration in seconds>");
+    PM_Message(client, "用法: .delay <持续时间（秒）>");
     return Plugin_Handled;
   }
 
@@ -449,7 +446,7 @@ public Action Command_SetDelay(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
@@ -457,7 +454,7 @@ public Action Command_SetDelay(int client, int args) {
   GetCmdArgString(arg, sizeof(arg));
   float delay = StringToFloat(arg);
   SetClientGrenadeFloat(nadeId, "delay", delay);
-  PM_Message(client, "Saved delay of %.1f seconds for grenade id %d.", delay, nadeId);
+  PM_Message(client, "已保存延迟 %.1f 秒。 投掷物 id %d.", delay, nadeId);
   return Plugin_Handled;
 }
 
@@ -467,7 +464,7 @@ public Action Command_ClearThrow(int client, int args) {
   }
 
   if (!g_CSUtilsLoaded) {
-    PM_Message(client, "You need the csutils plugin installed to use that command.");
+    PM_Message(client, "你需要安装 csutils 插件来使用此命令");
     return Plugin_Handled;
   }
 
@@ -477,13 +474,13 @@ public Action Command_ClearThrow(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
   SetClientGrenadeParameters(nadeId, g_LastGrenadeType[client], g_LastGrenadeOrigin[client],
                              g_LastGrenadeVelocity[client]);
-  PM_Message(client, "Cleared nade throwing parameters.");
+  PM_Message(client, "已清除投掷物参数");
   return Plugin_Handled;
 }
 
@@ -491,7 +488,7 @@ static void ClientThrowGrenade(int client, const char[] id, float delay = 0.0) {
   if (!ThrowGrenade(client, id, delay)) {
     PM_Message(
         client,
-        "No grenade parameters found for %s. Try \".goto %s\", throw the nade, and \".update\" and try again.",
+        "未找到 %s 投掷物的参数。 尝试 \".goto %s\"，投掷投掷物并输入 \".update\" 然后再试一次",
         id, id);
   }
 }
@@ -502,7 +499,7 @@ public Action Command_Throw(int client, int args) {
   }
 
   if (!g_CSUtilsLoaded) {
-    PM_Message(client, "You need the csutils plugin installed to use that command.");
+    PM_Message(client, "你需要安装 csutils 插件；来使用这个命令");
     return Plugin_Handled;
   }
 
@@ -521,7 +518,7 @@ public Action Command_Throw(int client, int args) {
 
     // Print what's about to be thrown.
     if (filterType == GrenadeMenuType_OneCategory) {
-      PM_Message(client, "Throwing category: %s", data);
+      PM_Message(client, "投掷分类: %s", data);
 
     } else {
       char idString[256];
@@ -534,9 +531,9 @@ public Action Command_Throw(int client, int args) {
         }
       }
       if (ids.Length == 1) {
-        PM_Message(client, "Throwing nade id %s", idString);
+        PM_Message(client, "投掷投掷物 id %s", idString);
       } else if (ids.Length > 1) {
-        PM_Message(client, "Throwing nade ids %s", idString);
+        PM_Message(client, "投掷投掷物 ids %s", idString);
       }
     }
 
@@ -552,18 +549,18 @@ public Action Command_Throw(int client, int args) {
       ClientThrowGrenade(client, id, delay);
     }
     if (ids.Length == 0) {
-      PM_Message(client, "No nades match %s", argString);
+      PM_Message(client, "没有投掷物符合 %s", argString);
     }
     delete ids;
 
   } else {
     // No arg, throw last nade.
     if (IsGrenade(g_LastGrenadeType[client])) {
-      PM_Message(client, "Throwing your last nade.");
+      PM_Message(client, "重新投掷您上次投掷的投掷物");
       CSU_ThrowGrenade(client, g_LastGrenadeType[client], g_LastGrenadeOrigin[client],
                        g_LastGrenadeVelocity[client]);
     } else {
-      PM_Message(client, "Can't throw you last nade; you haven't thrown any!");
+      PM_Message(client, "不能重新投掷您的上一个投掷物，您还没有投掷投掷物");
     }
   }
 
@@ -578,8 +575,8 @@ public Action Command_TestFlash(int client, int args) {
   g_TestingFlash[client] = true;
   PM_Message(
       client,
-      "Saved your position. Throw a flashbang and you will be teleported back here to see the flashbang's effect.");
-  PM_Message(client, "Use {GREEN}.stop {NORMAL}when you are done testing.");
+      "已保存您的位置。投掷闪光弹后您将被传送回此处以观察闪光弹效果");
+  PM_Message(client, "使用 {GREEN}.stop {NORMAL}来停止当您完成测试后");
   GetClientAbsOrigin(client, g_TestingFlashOrigins[client]);
   GetClientEyeAngles(client, g_TestingFlashAngles[client]);
   return Plugin_Handled;
@@ -591,7 +588,7 @@ public Action Command_StopFlash(int client, int args) {
   }
 
   g_TestingFlash[client] = false;
-  PM_Message(client, "Disabled flash testing.");
+  PM_Message(client, "已禁用闪光弹测试");
   return Plugin_Handled;
 }
 
@@ -610,7 +607,7 @@ public Action Command_AddCategory(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
@@ -618,7 +615,7 @@ public Action Command_AddCategory(int client, int args) {
   GetCmdArgString(category, sizeof(category));
   AddGrenadeCategory(nadeId, category);
 
-  PM_Message(client, "Added grenade category.");
+  PM_Message(client, "已添加投掷物分类");
   return Plugin_Handled;
 }
 
@@ -629,7 +626,7 @@ public Action Command_AddCategories(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
@@ -639,7 +636,7 @@ public Action Command_AddCategories(int client, int args) {
     AddGrenadeCategory(nadeId, category);
   }
 
-  PM_Message(client, "Added grenade category.");
+  PM_Message(client, "已添加投掷物分类");
   return Plugin_Handled;
 }
 
@@ -650,7 +647,7 @@ public Action Command_RemoveCategory(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
@@ -658,14 +655,14 @@ public Action Command_RemoveCategory(int client, int args) {
   GetCmdArgString(category, sizeof(category));
 
   if (StrEqual(category, "")) {
-    PM_Message(client, "You need to give a category name");
+    PM_Message(client, "您需要给这个分类命名");
     return Plugin_Handled;
   }
 
   if (RemoveGrenadeCategory(nadeId, category)) {
-    PM_Message(client, "Removed grenade category.");
+    PM_Message(client, "已移除投掷物分类");
   } else {
-    PM_Message(client, "Category not found.");
+    PM_Message(client, "未找到分类");
   }
 
   return Plugin_Handled;
@@ -676,14 +673,14 @@ public Action Command_DeleteCategory(int client, int args) {
   GetCmdArgString(category, sizeof(category));
 
   if (StrEqual(category, "")) {
-    PM_Message(client, "You need to give a category name");
+    PM_Message(client, "您需要给这个分类命名");
     return Plugin_Handled;
   }
 
   if (DeleteGrenadeCategory(client, category) > 0) {
-    PM_Message(client, "Removed grenade category.");
+    PM_Message(client, "已移除投掷物分类");
   } else {
-    PM_Message(client, "Category not found.");
+    PM_Message(client, "未找到分类");
   }
   return Plugin_Handled;
 }
@@ -695,12 +692,12 @@ public Action Command_ClearGrenadeCategories(int client, int args) {
   }
 
   if (!CanEditGrenade(client, nadeId)) {
-    PM_Message(client, "You aren't the owner of this grenade.");
+    PM_Message(client, "您不是此投掷物记录的所有者");
     return Plugin_Handled;
   }
 
   SetClientGrenadeData(nadeId, "categories", "");
-  PM_Message(client, "Cleared grenade categories for id %d.", nadeId);
+  PM_Message(client, "已清除投掷物分类 id %d.", nadeId);
 
   return Plugin_Handled;
 }
@@ -711,7 +708,7 @@ public Action Command_TranslateGrenades(int client, int args) {
   }
 
   if (args != 3) {
-    ReplyToCommand(client, "Usage: sm_translategrenades <dx> <dy> <dz>");
+    ReplyToCommand(client, "用法: sm_translategrenades <dx> <dy> <dz>");
     return Plugin_Handled;
   }
 
@@ -737,6 +734,6 @@ public Action Command_FixGrenades(int client, int args) {
 
   CorrectGrenadeIds();
   g_UpdatedGrenadeKv = true;
-  ReplyToCommand(client, "Fixed grenade data.");
+  ReplyToCommand(client, "已修复投掷物数据");
   return Plugin_Handled;
 }
