@@ -2,6 +2,7 @@ csgo-practice-mode
 CSGO 练习模式插件 汉化版
 
 ===========================
+
 此说明文档由RoyZ翻译，仅做介绍搬运
 FOR ORIGINAL [EN VERSION](https://github.com/splewis/csgo-practice-mode/)
 
