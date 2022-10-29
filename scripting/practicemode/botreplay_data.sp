@@ -35,7 +35,7 @@ public int ReplaysMenuHandler(Menu menu, MenuAction action, int param1, int para
     if (StrEqual(buffer, "add_new")) {
       IntToString(GetNextReplayId(), g_ReplayId[client], REPLAY_NAME_LENGTH);
       SetReplayName(g_ReplayId[client], DEFAULT_REPLAY_NAME);
-      PM_Message(client, "Started new replay with id %s", g_ReplayId[client]);
+      PM_Message(client, "回放开始 id %s", g_ReplayId[client]);
 
     } else if (StrContains(buffer, "exit") == 0) {
       ExitReplayMode();

@@ -41,11 +41,11 @@ public Action Command_SaveSpawn(int client, int args) {
   if (args >= 1 && GetCmdArg(1, arg, sizeof(arg))) {
     int team = GetClientTeam(client);
     SaveNamedSpawn(client, team, arg);
-    PM_Message(client, "Saved spawn \"%s\"", arg);
+    PM_Message(client, "已保存出生点 \"%s\"", arg);
     TeleportToNamedSpawn(client, team, arg);
     SetEntityMoveType(client, MOVETYPE_WALK);
   } else {
-    PM_Message(client, "Usage: .namespawn <name>");
+    PM_Message(client, "用法: .namespawn <名称>");
   }
 
   return Plugin_Handled;
@@ -90,11 +90,11 @@ public Action SpawnCommandWrapper(int client, int args, int team) {
       if (argInt == 0 && !StrEqual(arg, "0")) {
         if (DoesNamedSpawnExist(team, arg)) {
           TeleportToNamedSpawn(client, team, arg);
-          PM_Message(client, "Moved to spawn \"%s\"", arg);
+          PM_Message(client, "移动至出生点 \"%s\"", arg);
         } else {
           PM_Message(
               client,
-              "There is no spawn for \"%s\", use .namespawn <name> to add a name for your nearest spawn point",
+              "未找到 \"%s\" 的出生点, 使用 .namespawn <名称> 来为您最近的出生点命名",
               arg);
         }
         return Plugin_Handled;
@@ -107,14 +107,14 @@ public Action SpawnCommandWrapper(int client, int args, int team) {
     }
 
     if (spawnIndex < 0 || spawnIndex >= spawnList.Length) {
-      PM_Message(client, "Spawn number out of range. (%d max)", spawnList.Length);
+      PM_Message(client, "出生点数量超标 (%d max)", spawnList.Length);
       return Plugin_Handled;
     }
 
     int ent = spawnList.Get(spawnIndex);
     TeleportToSpawnEnt(client, ent);
     SetEntityMoveType(client, MOVETYPE_WALK);
-    PM_Message(client, "Moved to spawn %d (of %d).", spawnIndex + 1, spawnList.Length);
+    PM_Message(client, "移动至出生点 %d (of %d)", spawnIndex + 1, spawnList.Length);
   }
   return Plugin_Handled;
 }
@@ -141,14 +141,14 @@ public Action Command_GotoWorstSpawn(int client, int args) {
     }
 
     if (spawnIndex < 0 || spawnIndex >= spawnList.Length) {
-      PM_Message(client, "Spawn number out of range. (%d max)", spawnList.Length);
+      PM_Message(client, "出生点数量超标 (最大值为 %d )", spawnList.Length);
       return Plugin_Handled;
     }
 
     int ent = spawnList.Get(spawnIndex);
     TeleportToSpawnEnt(client, ent);
     SetEntityMoveType(client, MOVETYPE_WALK);
-    PM_Message(client, "Moved to spawn %d (of %d).", spawnIndex + 1, spawnList.Length);
+    PM_Message(client, "移动至出生点 %d (of %d)", spawnIndex + 1, spawnList.Length);
   }
   return Plugin_Handled;
 }

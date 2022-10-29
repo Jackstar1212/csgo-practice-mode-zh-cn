@@ -6,12 +6,12 @@ public Action Command_BotsMenu(int client, int args) {
   Menu menu = new Menu(BotsMenuHandler);
   menu.SetTitle("Bots Menu");
 
-  menu.AddItem("place", "Place a bot");
-  menu.AddItem("crouchplace", "Place a crouching bot");
-  menu.AddItem("load", "Load saved bots");
-  menu.AddItem("save", "Save current bots");
-  menu.AddItem("clear_bots", "Clear all bots");
-  menu.AddItem("delete", "Delete a bot");
+  menu.AddItem("place", "放置一个站立BOT");
+  menu.AddItem("crouchplace", "放置一个下蹲BOT");
+  menu.AddItem("load", "加载保存的BOT");
+  menu.AddItem("save", "保存当前BOT");
+  menu.AddItem("clear_bots", "删除所有BOT");
+  menu.AddItem("delete", "删除准心处的BOT");
 
   menu.Display(client, MENU_TIME_FOREVER);
   return Plugin_Handled;

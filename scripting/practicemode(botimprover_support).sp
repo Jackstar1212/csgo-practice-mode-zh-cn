@@ -855,6 +855,7 @@ public void OnConfigsExecuted() {
     BuildPath(Path_SM, disabledLegacyPluginName, sizeof(disabledLegacyPluginName),
               "plugins/disabled/pugsetup_practicemode.smx");
     ServerCommand("sm plugins unload pugsetup_practicemode");
+    ServerCommand("sm plugins unload bot_improver.smx"); //改动
     if (FileExists(disabledLegacyPluginName))
       DeleteFile(disabledLegacyPluginName);
     RenameFile(disabledLegacyPluginName, legacyPluginFile);
@@ -870,7 +871,7 @@ public void CheckAutoStart() {
       (g_PugsetupLoaded && PugSetup_GetGameState() != GameState_None)) {
     return;
   }
-
+  ServerCommand("sm plugins unload bot_improver.smx"); //改动
   LaunchPracticeMode();
 }
 
@@ -896,6 +897,7 @@ public Action Event_PlayerDisconnect(Event event, const char[] name, bool dontBr
   if (playerCount == 0) {
     if (g_InPracticeMode) {
       ExitPracticeMode();
+      ServerCommand("sm plugins load bot_improver.smx"); //改动
     }
     g_PracticeModeCanBeAutoStarted = true;
   }
@@ -909,6 +911,7 @@ public void OnMapEnd() {
   if (g_InPracticeMode) {
     bool practiceModeCanBeAutoStarted = g_PracticeModeCanBeAutoStarted;
     ExitPracticeMode();
+    ServerCommand("sm plugins load bot_improver.smx"); //改动
     g_PracticeModeCanBeAutoStarted = practiceModeCanBeAutoStarted;
   }
 
@@ -1207,6 +1210,7 @@ public void ReadPracticeSettings() {
 
 public void LaunchPracticeMode() {
   ServerCommand("exec sourcemod/practicemode_start.cfg");
+  ServerCommand("sm plugins unload bot_improver.smx"); //改动
 
   g_InPracticeMode = true;
   ReadPracticeSettings();
@@ -1313,6 +1317,7 @@ public void ExitPracticeMode() {
   }
 
   ServerCommand("exec sourcemod/practicemode_end.cfg");
+  ServerCommand("sm plugins load bot_improver.smx"); //改动
   PM_MessageToAll("练习模式已禁用");
 }
 
