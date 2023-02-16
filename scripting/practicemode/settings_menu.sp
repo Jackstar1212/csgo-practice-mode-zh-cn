@@ -33,7 +33,7 @@ public void GiveSettingsMenu(int client) {
   for (int i = 0; i < view_as<int>(UserSetting_NumSettings); i++) {
     char buffer[128];
     Format(buffer, sizeof(buffer), "%s: %s", g_UserSettingDisplayName[i],
-           GetSetting(client, view_as<UserSetting>(i)) ? "enabled" : "disabled");
+           GetSetting(client, view_as<UserSetting>(i)) ? "开启" : "关闭");
     AddMenuInt(menu, i, buffer);
   }
 

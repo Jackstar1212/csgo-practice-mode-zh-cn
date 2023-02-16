@@ -99,9 +99,9 @@ stock int FindAndErase(ArrayList array, int value) {
 
 stock void GetEnabledString(char[] buffer, int length, bool variable, int client = LANG_SERVER) {
   if (variable)
-    Format(buffer, length, "enabled");
+    Format(buffer, length, "开启");
   else
-    Format(buffer, length, "disabled");
+    Format(buffer, length, "关闭");
 }
 
 stock int GetCvarIntSafe(const char[] cvarName, int defaultValue = 0) {

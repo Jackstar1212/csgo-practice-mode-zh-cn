@@ -71,7 +71,7 @@ public void Replays_OnThrowGrenade(int client, int entity, GrenadeType grenadeTy
     if (delay < 1.27) {  // Takes 1.265625s to pull out a grenade.
       PM_Message(
           client,
-          "{LIGHT_RED}Warning: {NORMAL}throwing a grenade just after starting a recording may not save the grenade properly. {LIGHT_RED}Wait a second {NORMAL}after you start recording to throw your grenade for better results.");
+          "{LIGHT_RED}警告: {NORMAL}开始录制时立即投掷投掷物可能无法正确保存投掷物。 {NORMAL}为了更好的效果，{LIGHT_RED}请在开始录制时稍等一会儿 {NORMAL}再开始投掷投掷物");
     }
   }
 
@@ -123,7 +123,7 @@ void InitReplayFunctions() {
   ChangeSettingById("respawning", false);
   ServerCommand("mp_death_drop_gun 1");
 
-  PM_MessageToAll("Launched replay mode.");
+  PM_MessageToAll("启动回放模式");
 }
 
 public void ExitReplayMode() {
@@ -134,7 +134,7 @@ public void ExitReplayMode() {
   ChangeSettingById("respawning", true);
   ServerCommand("mp_death_drop_gun 0");
 
-  PM_MessageToAll("Exited replay mode.");
+  PM_MessageToAll("退出回放模式");
 }
 
 public void GetReplayBots() {
@@ -154,12 +154,12 @@ public Action Command_Replay(int client, int args) {
   }
 
   if (!g_BotMimicLoaded) {
-    PM_Message(client, "You need the botmimic plugin loaded to use replay functions.");
+    PM_Message(client, "你需要加载 botmimic 插件来使用回放功能");
     return Plugin_Handled;
   }
 
   if (!g_CSUtilsLoaded) {
-    PM_Message(client, "You need the csutils plugin loaded to use replay functions.");
+    PM_Message(client, "你需要加载 csutils 插件来使用回放功能");
     return Plugin_Handled;
   }
 
@@ -174,7 +174,7 @@ public Action Command_Replay(int client, int args) {
       strcopy(g_ReplayId[client], REPLAY_ID_LENGTH, arg);
       GiveReplayEditorMenu(client);
     } else {
-      PM_Message(client, "No replay with id %s exists.", arg);
+      PM_Message(client, "没有 id 为 %s 的回放存在", arg);
     }
 
     return Plugin_Handled;
@@ -205,12 +205,12 @@ public Action Command_Replays(int client, int args) {
   }
 
   if (!g_BotMimicLoaded) {
-    PM_Message(client, "You need the botmimic plugin loaded to use replay functions.");
+    PM_Message(client, "你需要加载 botmimic 插件来使用回放功能");
     return Plugin_Handled;
   }
 
   if (!g_CSUtilsLoaded) {
-    PM_Message(client, "You need the csutils plugin loaded to use replay functions.");
+    PM_Message(client, "你需要加载 csutils 插件来使用回放功能");
     return Plugin_Handled;
   }
 
@@ -228,7 +228,7 @@ public Action Command_NameReplay(int client, int args) {
   }
 
   if (!g_InBotReplayMode) {
-    PM_Message(client, "You're not in bot replay mode: use .replays first.");
+    PM_Message(client, "您当前未处于BOT回放模式: 请先使用 .replays 命令");
     return Plugin_Handled;
   }
 
@@ -239,9 +239,9 @@ public Action Command_NameReplay(int client, int args) {
   char buffer[REPLAY_NAME_LENGTH];
   GetCmdArgString(buffer, sizeof(buffer));
   if (StrEqual(buffer, "")) {
-    PM_Message(client, "You didn't give a name! Use: .namereplay <name>.");
+    PM_Message(client, "您还没有命名。 使用: .namereplay <name> 来命名");
   } else {
-    PM_Message(client, "Saved replay name.");
+    PM_Message(client, "已保存回放名");
     SetReplayName(g_ReplayId[client], buffer);
   }
   return Plugin_Handled;
@@ -253,7 +253,7 @@ public Action Command_NameRole(int client, int args) {
   }
 
   if (!g_InBotReplayMode) {
-    PM_Message(client, "You're not in bot replay mode: use .replays first.");
+    PM_Message(client, "您当前未处于BOT回放模式: 请先使用 .replays 命令");
     return Plugin_Handled;
   }
 
@@ -268,9 +268,9 @@ public Action Command_NameRole(int client, int args) {
   char buffer[REPLAY_NAME_LENGTH];
   GetCmdArgString(buffer, sizeof(buffer));
   if (StrEqual(buffer, "")) {
-    PM_Message(client, "You didn't give a name! Use: .namerole <name>.");
+    PM_Message(client, "您还没有命名。 使用: .namerole <name> 来命名");
   } else {
-    PM_Message(client, "Saved role %d name.", g_CurrentEditingRole[client] + 1);
+    PM_Message(client, "已保存角色 %d 的名字", g_CurrentEditingRole[client] + 1);
     SetRoleName(g_ReplayId[client], g_CurrentEditingRole[client], buffer);
   }
   return Plugin_Handled;
@@ -282,23 +282,23 @@ public Action Command_PlayRecording(int client, int args) {
   }
 
   if (!g_InBotReplayMode) {
-    PM_Message(client, "You're not in bot replay mode: use .replays first.");
+    PM_Message(client, "您当前未处于BOT回放模式: 请先使用 .replays 命令");
     return Plugin_Handled;
   }
 
   if (IsReplayPlaying()) {
-    PM_Message(client, "Wait for the current replay to finish first.");
+    PM_Message(client, "请先等待当前回放完成");
     return Plugin_Handled;
   }
 
   if (args < 1) {
-    PM_Message(client, "Usage: .play <id> [role]");
+    PM_Message(client, "用法: .play <id> [role]");
     return Plugin_Handled;
   }
 
   GetCmdArg(1, g_ReplayId[client], REPLAY_ID_LENGTH);
   if (!ReplayExists(g_ReplayId[client])) {
-    PM_Message(client, "No replay with id %s exists.", g_ReplayId[client]);
+    PM_Message(client, "没有 id 为 %s 的回放存在", g_ReplayId[client]);
     g_ReplayId[client] = "";
     return Plugin_Handled;
   }
@@ -317,7 +317,7 @@ public Action Command_PlayRecording(int client, int args) {
 
       int role = StringToInt(tmp) - 1;
       if (role < 0 || role > MAX_REPLAY_CLIENTS) {
-        PM_Message(client, "Invalid role: %s: must be between 1 and %d.", tmp, MAX_REPLAY_CLIENTS);
+        PM_Message(client, "无效的角色: %s: 必须处于 1 和 %d 之间", tmp, MAX_REPLAY_CLIENTS);
         return Plugin_Handled;
       }
 
@@ -327,11 +327,11 @@ public Action Command_PlayRecording(int client, int args) {
       }
     }
     delete split;
-    PM_MessageToAll("Running role(s) %s in replay %s.", roleBuffer, g_ReplayId[client]);
+    PM_MessageToAll("使用角色 %s ，在回放 %s 中", roleBuffer, g_ReplayId[client]);
 
   } else {
     // Play everything.
-    PM_MessageToAll("Running replay %s.", g_ReplayId[client]);
+    PM_MessageToAll("运行回放 %s.", g_ReplayId[client]);
     RunReplay(g_ReplayId[client]);
   }
 
@@ -389,7 +389,7 @@ public Action Event_ReplayBotDamageDealtEvent(Event event, const char[] name, bo
   if (IsReplayBot(victim) && IsPlayer(attacker) && BotMimic_IsPlayerMimicing(victim)) {
     int damage = event.GetInt("dmg_health");
     int postDamageHealth = event.GetInt("health");
-    PM_Message(attacker, "---> %d damage to %N (%d health)", damage, victim, postDamageHealth);
+    PM_Message(attacker, "对 %N 造成 ---> %d 伤害 (剩余 %d HP)", damage, victim, postDamageHealth);
   }
 
   return Plugin_Continue;

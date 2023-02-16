@@ -35,7 +35,7 @@ public int ReplaysMenuHandler(Menu menu, MenuAction action, int param1, int para
     if (StrEqual(buffer, "add_new")) {
       IntToString(GetNextReplayId(), g_ReplayId[client], REPLAY_NAME_LENGTH);
       SetReplayName(g_ReplayId[client], DEFAULT_REPLAY_NAME);
-      PM_Message(client, "Started new replay with id %s", g_ReplayId[client]);
+      PM_Message(client, "回放开始 id %s", g_ReplayId[client]);
 
     } else if (StrContains(buffer, "exit") == 0) {
       ExitReplayMode();
@@ -251,7 +251,7 @@ public void SetRoleNades(const char[] id, int index, int client) {
   if (g_ReplaysKv.JumpToKey(id, true)) {
     char role[DEFAULT_KEY_LENGTH];
     GetRoleKeyString(index, role);
-    if (g_ReplaysKv.JumpToKey(role, true) && g_ReplaysKv.JumpToKey("nades", true)) {
+    if (g_ReplaysKv.JumpToKey(role, true) && g_ReplaysKv.JumpToKey("nades", true) || g_ReplaysKv.JumpToKey("投掷物", true)) {
       for (int i = 0; i < list.Length; i++) {
         char key[DEFAULT_KEY_LENGTH];
         IntToString(i, key, sizeof(key));
@@ -285,7 +285,7 @@ public void GetRoleNades(const char[] id, int index, int client) {
   if (g_ReplaysKv.JumpToKey(id, true)) {
     char role[DEFAULT_KEY_LENGTH];
     GetRoleKeyString(index, role);
-    if (g_ReplaysKv.JumpToKey(role, true) && g_ReplaysKv.JumpToKey("nades", true)) {
+    if (g_ReplaysKv.JumpToKey(role, true) && g_ReplaysKv.JumpToKey("nades", true) || g_ReplaysKv.JumpToKey("投掷物", true)) {
       if (g_ReplaysKv.GotoFirstSubKey()) {
         do {
           GrenadeType type;

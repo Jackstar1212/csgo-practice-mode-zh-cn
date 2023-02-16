@@ -72,11 +72,11 @@ public int ReplayMenuHandler(Menu menu, MenuAction action, int param1, int param
         }
       }
       if (already_playing) {
-        PM_Message(client, "Wait for the current replay to finish first.");
+        PM_Message(client, "请先等待当前回放结束");
       } else {
         char replayName[REPLAY_NAME_LENGTH];
         GetReplayName(g_ReplayId[client], replayName, sizeof(replayName));
-        PM_MessageToAll("Starting replay: %s", replayName);
+        PM_MessageToAll("开始回放: %s", replayName);
         RunReplay(g_ReplayId[client]);
       }
 
@@ -86,7 +86,7 @@ public int ReplayMenuHandler(Menu menu, MenuAction action, int param1, int param
       CancelAllReplays();
       if (BotMimic_IsPlayerRecording(client)) {
         BotMimic_StopRecording(client, false /* save */);
-        PM_Message(client, "Cancelled recording.");
+        PM_Message(client, "取消录制");
       }
       GiveReplayEditorMenu(client, GetMenuSelectionPosition());
 
@@ -102,7 +102,7 @@ public int ReplayMenuHandler(Menu menu, MenuAction action, int param1, int param
     } else if (StrEqual(buffer, "copy")) {
       char replayName[REPLAY_NAME_LENGTH];
       GetReplayName(g_ReplayId[client], replayName, REPLAY_NAME_LENGTH);
-      PM_Message(client, "Copied replay: %s", replayName);
+      PM_Message(client, "已复制回放: %s", replayName);
 
       char oldReplayId[REPLAY_ID_LENGTH];
       strcopy(oldReplayId, sizeof(oldReplayId), g_ReplayId[client]);
@@ -116,16 +116,16 @@ public int ReplayMenuHandler(Menu menu, MenuAction action, int param1, int param
       GiveReplayEditorMenu(client, GetMenuSelectionPosition());
 
     } else if (StrContains(buffer, "name") == 0) {
-      PM_Message(client, "Use .namereplay <name> to name this replay.");
+      PM_Message(client, "使用 .namereplay <name> 来命名此回放");
       GiveReplayEditorMenu(client, GetMenuSelectionPosition());
 
     } else if (StrContains(buffer, "freeze") == 0) {
       PM_Message(client,
-                 "Froze replay. Role edit buttons will be disabled until the replay is unfrozen.");
+                 "回放已冻结。在回放解冻之前，角色编辑按钮将被暂时禁用。");
       SetReplayFrozen(g_ReplayId[client], true);
       GiveReplayEditorMenu(client, GetMenuSelectionPosition());
     } else if (StrContains(buffer, "unfreeze") == 0) {
-      PM_Message(client, "Unfroze replay.");
+      PM_Message(client, "回放已解冻");
       SetReplayFrozen(g_ReplayId[client], false);
       // Going back to the same page in the replay menu makes sense for menu consistency,
       // but if a user pressed this they probably want to do some edits, so there's a case
@@ -140,25 +140,25 @@ public int ReplayMenuHandler(Menu menu, MenuAction action, int param1, int param
         }
       }
       if (count == 0) {
-        PM_Message(client, "Cannot record a full replay with no players on T/CT.");
+        PM_Message(client, "当T/CT阵营没有玩家时，无法录制完整回放");
         return 0;
       }
       if (count > MAX_REPLAY_CLIENTS) {
         PM_Message(
             client,
-            "Cannot record a full replay with %d players. Only up to %d is supported. Other players should move to spectator.",
+            "只有 %d 位玩家时，无法录制完整回放。 只有玩家数达到 %d 时可以录制回放。 其他玩家应该加入观察者阵营。",
             count, MAX_REPLAY_CLIENTS);
         return 0;
       }
 
       if (BotMimic_IsPlayerRecording(client)) {
-        PM_Message(client, "Finish your current recording first!");
+        PM_Message(client, "请先完成当前录制");
         GiveReplayEditorMenu(client, GetMenuSelectionPosition());
         return 0;
       }
 
       if (IsReplayPlaying()) {
-        PM_Message(client, "Finish your current replay first!");
+        PM_Message(client, "请先完成当前回放");
         GiveReplayEditorMenu(client, GetMenuSelectionPosition());
         return 0;
       }
@@ -174,9 +174,9 @@ public int ReplayMenuHandler(Menu menu, MenuAction action, int param1, int param
       }
       g_RecordingFullReplay = true;
       g_RecordingFullReplayClient = client;
-      PM_MessageToAll("Began recording %d-player replay.", count);
+      PM_MessageToAll("开始录制 %d-player 的回放", count);
       PM_MessageToAll(
-          "When any player presses their inspect button (default:f) the recording will stop.");
+          "当任意玩家按下武器检视按钮时（默认：F）将停止录制");
 
     } else {
       // Handling for recording players [0, 4]
@@ -213,7 +213,7 @@ void FinishRecording(int client, bool printOnFail) {
     if (BotMimic_IsPlayerRecording(client)) {
       BotMimic_StopRecording(client, true /* save */);
     } else if (printOnFail) {
-      PM_Message(client, "You aren't recording a playback right now.");
+      PM_Message(client, "您现在没有在录制");
     }
   }
 }
@@ -260,7 +260,7 @@ public Action Command_Cancel(int client, int args) {
 
   } else if (numReplaying > 0) {
     CancelAllReplays();
-    PM_MessageToAll("Cancelled all replays.");
+    PM_MessageToAll("已取消所有回放");
   }
 
   return Plugin_Handled;
@@ -311,12 +311,12 @@ public int ReplayRoleMenuHandler(Menu menu, MenuAction action, int param1, int p
 
     if (StrEqual(buffer, "record")) {
       if (BotMimic_IsPlayerRecording(client)) {
-        PM_Message(client, "Finish your current recording first!");
+        PM_Message(client, "请先完成当前录制");
         GiveReplayRoleMenu(client, role, GetMenuSelectionPosition());
         return 0;
       }
       if (IsReplayPlaying()) {
-        PM_Message(client, "Finish your current replay first!");
+        PM_Message(client, "请先完成当前回放");
         GiveReplayRoleMenu(client, role, GetMenuSelectionPosition());
         return 0;
       }
@@ -329,7 +329,7 @@ public int ReplayRoleMenuHandler(Menu menu, MenuAction action, int param1, int p
 
     } else if (StrEqual(buffer, "play")) {
       if (IsReplayPlaying()) {
-        PM_Message(client, "Finish your current replay first!");
+        PM_Message(client, "请先完成当前回放");
         GiveMainReplaysMenu(client);
         return 0;
       }
@@ -341,12 +341,12 @@ public int ReplayRoleMenuHandler(Menu menu, MenuAction action, int param1, int p
       GiveReplayRoleMenu(client, role, GetMenuSelectionPosition());
 
     } else if (StrEqual(buffer, "name")) {
-      PM_Message(client, "Use .namerole <name> to name this role.");
+      PM_Message(client, "使用 .namerole <name> 来命名此角色");
       GiveReplayRoleMenu(client, role, GetMenuSelectionPosition());
 
     } else if (StrEqual(buffer, "nades")) {
       if (g_NadeReplayData[client].Length == 0) {
-        PM_Message(client, "This role has no nades saved in it.");
+        PM_Message(client, "该角色没有保存的投掷物");
         GiveReplayRoleMenu(client, role, GetMenuSelectionPosition());
       } else {
         GiveReplayRoleNadesMenu(client);
@@ -354,7 +354,7 @@ public int ReplayRoleMenuHandler(Menu menu, MenuAction action, int param1, int p
 
     } else if (StrEqual(buffer, "delete")) {
       DeleteReplayRole(g_ReplayId[client], role);
-      PM_Message(client, "Deleted role %d.", role + 1);
+      PM_Message(client, "已删除角色 %d.", role + 1);
       GiveReplayEditorMenu(client);
     }
 
@@ -460,7 +460,7 @@ public int DeletionMenuHandler(Menu menu, MenuAction action, int param1, int par
       char replayName[REPLAY_NAME_LENGTH];
       GetReplayName(g_ReplayId[client], replayName, sizeof(replayName));
       DeleteReplay(g_ReplayId[client]);
-      PM_MessageToAll("Deleted replay: %s", replayName);
+      PM_MessageToAll("已删除回放: %s", replayName);
       GiveMainReplaysMenu(client);
     } else {
       GiveReplayEditorMenu(client);
@@ -499,13 +499,13 @@ stock void StartRecording(int client, int role, bool printCommands = true) {
   }
 
   if (printCommands) {
-    PM_Message(client, "Started recording player %d role.", role + 1);
+    PM_Message(client, "开始录制玩家 %d 的角色", role + 1);
 
     if (GetSetting(client, UserSetting_StopsRecordingInspectKey)) {
       PM_Message(client,
-                 "Use .finish, your inspect (default:f) bind, or .noclip to stop recording.");
+                 "使用 .finish、武器检视按钮（默认：F）,、或 .noclip 来停止录制");
     } else {
-      PM_Message(client, "Use .finish or .noclip to stop recording.");
+      PM_Message(client, "使用 .finish 或 .noclip 来停止录制");
     }
   }
 }
@@ -520,7 +520,7 @@ public Action BotMimic_OnStopRecording(int client, char[] name, char[] category,
     if (!save) {
       // We only handle the not-saving case here because BotMimic_OnRecordSaved below
       // is handling the saving case.
-      PM_Message(client, "Cancelled recording player role %d", g_CurrentEditingRole[client] + 1);
+      PM_Message(client, "取消录制玩家角色 %d", g_CurrentEditingRole[client] + 1);
       GiveReplayMenuInContext(client);
     }
   }
@@ -535,12 +535,12 @@ public void BotMimic_OnRecordSaved(int client, char[] name, char[] category, cha
     SetRoleTeam(g_ReplayId[client], g_CurrentEditingRole[client], GetClientTeam(client));
 
     if (!g_RecordingFullReplay) {
-      PM_Message(client, "Finished recording player role %d", g_CurrentEditingRole[client] + 1);
+      PM_Message(client, "已完成玩家角色 %d 的；录制", g_CurrentEditingRole[client] + 1);
       GiveReplayMenuInContext(client);
     } else {
       if (g_RecordingFullReplayClient == client) {
         g_CurrentEditingRole[client] = -1;
-        PM_MessageToAll("Finished recording full replay.");
+        PM_MessageToAll("已完成完整回放录制");
         RequestFrame(ResetFullReplayRecording, GetClientSerial(client));
       }
     }

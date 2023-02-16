@@ -1,153 +1,196 @@
-csgo-practice-mode
+## CSGO练习模式
+
+### 由 [@Jackstar1212](https://github.com/Jackstar1212) 翻译，部分参考 [@RoyZ-CSGO](https://github.com/RoyZ-CSGO) 的翻译结果，后续会不断修订
+
+## 目前的计划
+
+○ 完善 readme.md 相关链接
+
+√ 完善插件汉化
+
+○ 翻译原插件 WIKI 页面
+
+○ 持续同步更新源作者代码（最近状态差，等状态好了会去找时间来做）
+
+===========================
+## 致谢列表
+
+b站： @农b_Official, @RoyZ_, @阿蠢子, @冷场王小龙
+
+GitHub：Kroytz
+
+水友：石决（新新新新新手）, 白桃乌龙茶, 幻夜之月, Kevin, RobamSs, 神慧北极, Ackerman, BUIDEI, Max, 闻轶
+
+还有许多不一一列举了
+
+### 特别感谢各位对此插件和服务器做出的贡献与支持！
+
 ===========================
 
-[![Build status](http://ci.splewis.net/job/csgo-practice-mode/badge/icon)](http://ci.splewis.net/job/csgo-practice-mode/)
-[![GitHub Downloads](https://img.shields.io/github/downloads/splewis/csgo-practice-mode/total.svg?style=flat-square&label=Downloads)](https://github.com/splewis/csgo-practice-mode/releases/latest)
-[![Discord Chat](https://img.shields.io/discord/926309849673895966.svg)](https://discord.gg/zmqEa4keCk)
+### Windows端本地服务器懒人整合包（1.3.4 Fix2 版本）：[蓝奏云：点此下载](https://wwz.lanzouv.com/b03jikv0h)
 
-**Status: Supported, actively developed.**
+#### 密码:bg5k
 
-Practice Mode is a sourcemod plugin for helping players/teams run practices. See this [YouTube video](https://www.youtube.com/watch?v=ua_I30DTggQ) for a demonstration. Check out the features and command list below for a better understanding of all the tools practicemode provides.
+===========================
 
-## Download
+[![构建版本状态](http://ci.splewis.net/job/csgo-practice-mode/badge/icon)](http://ci.splewis.net/job/csgo-practice-mode/)
+[![GitHub 下载量](https://img.shields.io/github/downloads/splewis/csgo-practice-mode/total.svg?style=flat-square&label=Downloads)](https://github.com/splewis/csgo-practice-mode/releases/latest)
+[![Discord 聊天室](https://img.shields.io/discord/926309849673895966.svg)](https://discord.gg/zmqEa4keCk)
 
-Download from [the releases section](https://github.com/splewis/csgo-practice-mode/releases).
+**状态: 处于支持中, 正在积极开发**
 
-You may also download the [latest development build](http://ci.splewis.net/job/csgo-practice-mode/lastSuccessfulBuild/) if you wish. If you report any bugs from these, make sure to include the build number (when typing ``sm plugins list`` into the server console, the build number will be displayed with the plugin version).
+练习模式是一个sourcemod插件，用于帮助玩家/战队进行练习。请看这个[YouTube视频](https://www.youtube.com/watch?v=ua_I30DTggQ) 的演示。查看下面的功能和命令列表，以更好地了解练习模式提供的所有功能。
 
-### Installation
+## 下载地址
 
-1. Confirm you have [SourceMod](https://www.sourcemod.net/downloads.php) and [MetaMod:Source](https://metamodsource.net/downloads.php). You must have a 1.9+ build of sourcemod.
+从这里下载（原版） [发行页面](https://github.com/splewis/csgo-practice-mode/releases)。
 
-2. Extract **all** files in the release zip from above to the ``csgo`` server directory. You should see a ``practicemode.smx`` file in ``addons/sourcemod/plugins``.
+从这里下载（汉化版） [发行页面](https://github.com/Jackstar1212/csgo-practice-mode-zh-cn/releases)。
 
-3. To start practicemode via the ``.setup`` command, either [add yourself as a sourcemod admin](https://github.com/splewis/csgo-practice-mode/wiki/Command-access#adding-admins-in-sourcemod) or [remove the admin requirement](https://github.com/splewis/csgo-practice-mode/wiki/Command-access#launching-practicemode).
+如果你想的话，你也同样可以下载 [最新开发版本（原版无汉化）](http://ci.splewis.net/job/csgo-practice-mode/lastSuccessfulBuild/) 。 如果你想从中报告任何的bug，请确保包括sourcemod的构建版本号（当在服务器控制台输入``sm plugins list``时，构建版本号将与插件版本一起显示）。
 
-**Note**: access to the .setup requires having the sourcemod admin changemap flag ("g") by default. See [the wiki](https://github.com/splewis/csgo-practice-mode/wiki/Command-access) for more information on changing how admin access works.
+### 安装方法
 
-### Download and installation for dummies
+1. 确认您已安装 [SourceMod](https://www.sourcemod.net/downloads.php) 和 [MetaMod:Source](https://metamodsource.net/downloads.php)。 您的sourcemod版本必须为 1.9 或更高的版本。
 
-For a more thorough guide for users new to configuring servers, please see [this wiki page](https://github.com/splewis/csgo-practice-mode/wiki/Step-by-step-installation-guide).
+2. 解压发行版本的压缩包中的 **所有** 文件并放置到服务器的 ``csgo`` 文件夹路径下。 您应该可以看见 ``practicemode.smx`` 文件位于``addons/sourcemod/plugins``路径下。
 
-## Features
-- Draws working grenade trajectories if ``sv_grenade_trajectory`` is on (since it doesn't work on dedicated servers)
-- Adds new cvars to give extra practice settings (infinite money, noclip without needing sv_cheats enabled)
-- Can save users' grenade locations/eye-angles with a name and description for them (grenade data is saved to a file on the server in the ``addons/sourcemod/data/practicemode/grenades`` directory)
-- Users can goto any players' saved grenades to learn or revisit them
-- Displays a menu with toggle settings to set practice cvars defined in [addons/sourcemod/configs/practicemode.cfg](configs/practicemode.cfg)
-- Maintains your grenade history on the current map so you can use ``.back`` and ``.forward`` to see all spots you threw grenades from in the current session
-- Can replay grenade throws for testing, either in isolation or in the context of a full timed-execute
+3. 通过 ``.setup`` 命令来启动练习模式，或者 [将您自身添加为 sourcemod 的管理员](https://github.com/splewis/csgo-practice-mode/wiki/Command-access#adding-admins-in-sourcemod) 或者 [移除启动练习模式所需要的管理员权限](https://github.com/splewis/csgo-practice-mode/wiki/Command-access#launching-practicemode).
 
-## Commands
+**注意**: 使用 .setup 命令来启动练习模式默认需要玩家至少拥有 sourcemod 管理员权限分级中的更换地图（标识为"g"）权限。参考 [WIKI 页面](https://github.com/splewis/csgo-practice-mode/wiki/Command-access) 来获取关于改变管理员访问方式的更多信息。
 
-### General commands
+### 面向新手的下载和安装教程
 
-- ``.setup`` displays the practicemode menu
-- ``.prac`` launches practice mode and displays the ``.setup`` menu
-- ``.help``: displays this page
-- ``.settings``: opens the client settings menu
-- ``.exitprac``: exits practicemode
+关于为刚开始配置服务器的用户提供的更全面的指南，请参见 [WIKI 页面](https://github.com/splewis/csgo-practice-mode/wiki/Step-by-step-installation-guide)。
 
-### Saving grenade positions
-- ``.nades [filter]``: displays a menu to select saved grenade positions. ``.nades`` with no argument shows all nades. ``filter`` can be any of: nade ids, category name, player name, or part of a grenade name
-- ``.cats ``: displays a menu of all saved grenades by category
-- ``.save <name>``: saves your current position as a grenade spot with the given name
-- ``.goto <grenadeid>``: teleports you to a player's saved grenade (or your own if no player is named)
-- ``.delete``: deletes the last grenade of yours that you used .goto (or .nades) to teleport to
-- ``.find <text>``: searches all grenade names for a text match
+## 功能
 
-### Modifying a saved grenade
-All of the following commands can only be used on _your_ grenades. They will apply to the last saved grenade you went to, whether by ``.save``, ``.nades``, or ``.goto``.
-- ``.desc <description>``: adds a grenade description to your last grenade
-- ``.rename <new name>``: renames your last grenade
-- ``.addcat <category> ...``: adds a category to your last grenade
-- ``.removecat <category>``: removes a category from your last grenade
-- ``.clearcats``: removes all categories on your last grenade
-- ``.deletecat <category>``: removes a category from **all** of your saved grenades
-- ``.copy <username> <grenadeid>``: copies another user's grenade and saves it for you
-- ``.setdelay <delay>``: sets a delay on your last grenade. This is only used when using .throw against a category
+- 如果启用了``sv_grenade_trajectory``，插件将为所有玩家绘制投掷物轨迹。
+- 添加了新的cvar以提供额外的练习设置（无限金钱，无需启用sv_cheats的noclip）
+- 可以保存用户的投掷物位置/角度及其名称和描述（投掷物数据保存到服务器上的``addons / sourcemod / data / practicemode / grenades``目录中的文件中）
+- 用户可以转到任何玩家保存的投掷物来学习或重新访问他们
+- 显示带有切换设置的菜单，以设置在[addons / sourcemod / configs / practicemode.cfg]（configs / practicemode.cfg）中定义的练习cvar
+- 在当前地图上保持您的投掷物历史记录，因此您可以使用.back和.forward来查看您在当前会话中投掷的所有投掷物点
+- 可以单独或在完全定时执行的情况下重放投掷物测试以进行测试
 
-### Testing grenades
-- ``.last``: teleports you back to where you threw your last grenade from
-- ``.back``: teleports you back a position in your grenade history (you can also do ``.back 5`` to go to the 5th grenade you threw, for example)
-- ``.forward``: teleports you forward a position in your grenade history
-- ``.flash``:  saves you position to test flashbangs against it. Use this command in a spot you want to try to blind, then move and throw the flashbang; you will be teleported back to the position and see how effective the flashbang is. Use ``.stop`` to cancel.
-- ``.throw [filter]``: automatically throws all grenades matching the filter. With no filter, throws the last grenade you threw.
-- ``.noflash``: makes it so no flashbangs will blind you (they still blind others)
+## 指令
 
-### Spawn commands
-- ``.respawn``: makes you respawn at the spot you are standing (``.stop`` to cancel)
-- ``.spawn <number>``: teleports you to a spawn #, using your team's spawns (CT or T). Closest spawn is used if no argument is given
-- ``.ctspawn <number>``: same as .spawn, but using CT only regardless of what team you are on
-- ``.tspawn <number>``: same as .spawn, but using T only regardless of what team you are on
-- ``.namespawn <name>``: saves the closest spawn to you under a name, which can then be gone to via ``.spawn <name>``
-- ``.bestspawn``: teleports you to your team's closest spawn from your current position
-- ``.worstspawn``: teleports you to your team's furthest spawn from your current position
+### 常规指令
 
-### Bot commands
-- ``.bots``: opens the bot menu for easier access to most of the below commands
-- ``.bot``: adds a bot where you're standing (or crouching!); ``.crouchbot`` to force a crouching bot
-- ``.ctbot``, ``.tbot``: same as ``.bot``, but forces the bot's team to CT or T
-- ``.botplace``: adds a bot at the point you're looking at (similar to the ``bot_place`` command)
-- ``.boost``: spawns a bot boosting you (crouch-boosting if you're crouching); ``.crouchboost`` to force a crouching bot
-- ``.swapbot``: swaps your position with the nearest bot (temporarily, the bot will respawn in the original spot still)
-- ``.movebot``: moves the last bot you placed to your current position
-- ``.nobot``: removes the bot you're aiming at (can also use ``.kickbot`` or ``.removebot``)
-- ``.nobots``: clears all bots (``.clearbots``, ``.removebots``, ``.kickbots`` also work)
-- ``.savebots``: saves all current bots to a file
-- ``.loadbots``: loads bots from the file (written by the last ``.savebots``)
+- ``.setup`` : 显示练习模式配置菜单
+- ``.prac`` : 启动练习模式并展示 ``.setup`` 菜单
+- ``.help``: 显示此帮助页面
+- ``.settings``: 打开客户端设置菜单
+- ``.exitprac``: 退出练习模式
 
-### Miscellaneous commands
-- ``.timer``: starts a timer when you start moving in any direction, and stops it when you stop moving, telling you the duration of time between starting/stopping
-- ``.timer2``: starts a timer immediately and stops it when you type .timer2 again, telling you the duration of time
-- ``.countdown <duration>``: starts a countdown timer for the duration specified (in seconds), defaulting to the round duration (the `mp_roundtime` cvar).
-- ``.fastfoward`` (or ``.ff``): speeds up the server clock briefly so smokes dissipate quickly
-- ``.repeat <interval> <command>``: give a number of seconds and a chat command, the command will automatically repeat at the given interval. For example: ``.repeat 3 .throw`` repeats .throw every 3 seconds
-- ``.delay <duration> <command>``: runs the given chat command after a given duration (in seconds)
-- ``.map``: changes map (you can use a map name like ``.map de_dust2`` or just ``.map`` to get a menu)
-- ``.dryrun``: disables most practicemode settings (leaving infinte money on), restarts the round, and sets freezetime to ``sm_practicemode_dry_run_freeze_time`` (default 6) - you can also use ``.dry``
-- ``.enable <arg>``: enables a partially-named setting, or "all" settings.
-- ``.disable <arg>``: disables a partially-named setting, or "all" settings.
-- ``.savepos``: temporarily saves a position so you can ``.back`` to it (this adds the position to the list of grenade positions you've thrown)
-- ``.god``: toggles god mode (alias for the ``god`` command in console; requires sv_cheats to be on)
-- ``.endround``: ends the round (alias for the ``endround`` command in console; requires sv_cheats to be on)
-- ``.break``: breaks all func_breakable entities (most windows)
-- ``.stop``: cancels a current action (this can stop many things: the .flash command, the .repeat command, and the .timer command)
-- ``.spec``, ``.t``, ``.ct``: joins a team
+### 保存投掷物位置
 
-### Bot replay commands
-**Note:** bot replay support is currently a work in progress. It's not ready for general use yet. Installing the [dhooks extension](http://users.alliedmods.net/~drifter/builds/dhooks/2.2/) is also a good idea if you plan using these commands. Expect random crashes if you use these.
+- ``.nades [过滤器]``: 显示一个菜单来选择已保存的投掷物位置。 ``.nades`` 不带参数显示所有投掷物。``过滤器``可以是以下任何一种：投掷物ID，类别名称，玩家名称或投掷物名称的一部分
+- ``.cats``：按类别显示所有已保存投掷物的菜单
+- ``.save <名称>``：使用给定名称将当前位置保存为投掷物位置
+- ``.goto <投掷物id>``：将您传送到玩家已保存的投掷物（如果没有命名玩家则为您自己的投掷物）
+- ``.delete``：删除您使用.goto（或.nades）传送到的最后一个投掷物
+- ``.find <文本>``：在所有投掷物名称中搜索文本匹配项
 
-- ``.replays``: opens replay mode menu
-- ``.replay``: opens the replay mode menu, or the last replay/role menu you had open
-- ``.namereplay``: names the replay you're currently working on
-- ``.namerole``: names the role you're currently working on
-- ``.finish``: finishes and saves current recording
-- ``.cancel``: cancels current replay/recording
-- ``.play <id> [role]``: plays a replay id (all the roles), or a single role from a replay
+### 修改已保存的投掷物
+
+以下所有命令只能在 _你的_ 投掷物上使用。它们将应用于您上次保存的投掷物，无论是通过.save，.nades还是.goto。
+- ``.desc <描述>``：在最后一个投掷物上添加一个投掷物描述
+- ``.rename <新名称>``：重命名您的最后一枚投掷物
+- ``.addcat <类别> ...``：将类别添加到您的最后一枚投掷物
+- ``.removecat <分类>``：从上一个投掷物中删除一个类别
+- ``.clearcats``：删除最后一个投掷物上的所有类别
+- ``.deletecat <类别>``：从所有保存的投掷物中删除一个类别
+- ``.copy <用户名> <投掷物id>``：复制另一个用户的投掷物并将其保存为您
+- ``.setdelay <延迟>``：设置最后一个投掷物的延迟时间。仅在对类别使用.throw时使用
+
+### 测试投掷物
+
+- ``.last``：将你传送回你投掷最后一枚投掷物的地方
+- ``.back``：传送您回到投掷物历史记录中的位置（例如，您也可以执行``.back 5``转到所投掷的第5颗投掷物）
+- ``.forward``：传送你在投掷物历史上的位置
+- ``.flash``：保存您的位置以对其进行测试。在您想致盲的地方使用此命令，然后移动并扔出闪光灯。您将被传送回该位置，并查看闪光灯的效果。使用``.stop``取消。
+- ``.throw [过滤器]``：自动抛出所有与过滤器匹配的投掷物。没有过滤器，投掷您投掷的最后一枚投掷物。
+- ``.noflash``：使您不受到闪光弹的闪白效果（他们仍然会使其他人受到闪白效果）
+
+### Spawn 命令
+
+- ``.respawn``：使您在站立的位置重生（``.stop``取消）
+- ``.spawn <出生点ID>``：使用阵营的出生（CT或T）将您传送到出生点。如果没有给出出生点ID，则使用最近的出生点
+- ``.ctspawn <出生点ID>``：与.spawn相同，但是无论您在哪个阵营中，仅用于CT
+- ``.tspawn <出生点ID>``：与.spawn相同，但是无论您在哪个阵营中，仅用于T
+- ``.namespawn <名称>``：将最接近的出生保存在一个名称下，然后可以通过``.spawn <名称>``进入
+- ``.bestspawn``：将您从当前位置传送到阵营中最近的出生点（最优出生点，第一身位）
+- ``.worstspawn``：从当前位置传送到阵营中最远的出生点（最差出生点，最后一身位）
+
+### Bot 命令
+
+- ``.bots``：打开bot菜单以便更轻松地访问以下大多数命令
+- ``.bot``：在您站立的地方添加一个机器人（或蹲伏）; ``.crouchbot``强制蹲伏机器人
+- ``.ctbot``，``.tbot``：与``.bot``相同，但是将机器人的团队强制为CT或T
+- ``.botplace``：在您要查看的位置添加一个机器人（类似于``bot_place``命令）
+- ``.boost``：出生一个机器人来提升你的能力（如果你蹲伏的话会蹲下来）; ``.crouchboost``强制蹲伏机器人
+- ``.swapbot``：与最近的机器人交换您的位置（临时，该机器人仍会在原始位置重新出生）
+- ``.movebot``：将您放置的最后一个机器人移动到当前位置
+- ``.nobot``：删除您瞄准的机器人（也可以使用``.kickbot``或``.removebot``）
+- ``.nobots``：清除所有机器人（``.clearbots``，``.removebots``，``.kickbots``也可以使用）
+- ``.savebots``：将所有当前的机器人保存到文件中
+- ``.loadbots``：从文件中加载已保存的机器人（由最后的``.savebots``编写）
+
+### 其他命令
+
+- ``.timer``：当您开始沿任何方向移动时启动一个计时器，当您停止移动时停止计时器，告诉您启动/停止之间的时间间隔
+- ``.timer2``：立即启动一个计时器并在再次键入.timer2时将其停止，告诉您持续时间
+- ``.countdown <duration>``：在指定的持续时间（以秒为单位）中启动倒数计时器，默认为舍入持续时间（`mp_roundtime` cvar）。
+- ``.fastfoward``（或``.ff``）：短暂地加快服务器时钟速度，以使烟雾迅速消散
+- ``.repeat <interval> <command>``：给出一个秒数和一个聊天命令，该命令将以给定的间隔自动重复。例如：``.repeat 3 .throw``每3秒扔出一次
+- ``.delay <duration> <command>``：在给定的持续时间（以秒为单位）后运行给定的聊天命令
+- ``.map``：更改地图（您可以使用地图名称，例如``.map de_dust2``或仅使用``.map``来获取菜单）
+- ``.dryrun``：禁用大多数练习模式设置（保留无限资历），重新开始回合，并将冻结时间设置为``sm_practicemode_dry_run_freeze_time``（默认6）-您也可以使用``.dry``
+- ``.enable <arg>``：启用部分命名的设置或“所有”设置。
+- ``.disable <arg>``：禁用部分命名的设置或“所有”设置。
+- ``.savepos``：临时保存一个位置，以便您可以对其进行``.back``（这会将位置添加到您抛出的投掷物位置列表中）
+- ``.god``：切换上帝模式（控制台中``god``命令的别名;要求打开sv_cheats）
+- ``.endround``：结束回合（控制台中``endround``命令的别名;要求打开sv_cheats）
+- ``.break``：中断所有func_breakable实体（大多数窗口）
+- ``.stop``：取消当前操作（这可以停止很多事情：.flash命令，.repeat命令和.timer命令）
+- ``.spec``，``.t``，``.ct``：加入团队
+
+### Bot重放命令
+
+**注意：**机器人重放支持目前正在进行中。还没有准备好用于一般用途。如果计划使用这些命令，则安装[dhooks扩展](http://users.alliedmods.net/~drifter/builds/dhooks/2.2/)也是一个好主意。如果使用这些，可能会产生随机崩溃。
+
+- ``.replays``：打开重放模式菜单
+- ``.replay``：打开重放模式菜单，或者您打开的最后一个重放/角色菜单
+- ``.namereplay``：命名您当前正在处理的重放
+- ``.namerole``：命名您当前正在处理的角色
+- ``.finish``：完成并保存当前录音
+- ``.cancel``：取消当前的重放/记录
+- ``.play <id> [role]``：播放重放ID（所有角色），或重放中的单个角色
 
 
-Also see the [notes for power users](https://github.com/splewis/csgo-practice-mode/wiki/Notes-for-power-users) for more detail on using these commands effectively.
+也请看[高级用户须知](https://github.com/splewis/csgo-practice-mode/wiki/Notes-for-power-users)，了解有效使用这些命令的更多细节。
 
 
-## ConVars
-You can edit these in the file ``cfg/sourcemod/practicemode.cfg``, which is autogenerated when the plugin first starts.
+## 可控制变量
 
-Note that this is not necessarily an exhaustive list; check ``cfg/sourcemod/practicemode.cfg`` for more cvars, or even consider checking the source code for a more up-to-date listing.
+您可以在``cfg / sourcemod / practicemode.cfg``文件中编辑这些文件，该文件在插件首次启动时会自动生成。
 
-- ``sm_practicemode_alphabetize_nades``: displays grenades in alphabetical order instead of id order
-- ``sm_practicemode_share_all_nades``: lets all users edit all nades, and hides who created them
-- ``sm_practicemode_autostart``: whether to automatically start practicemode (NOTE: several users have reported FPS or crashing issues with this cvar, use with caution)
-- ``sm_practicemode_max_grenades_saved``: max # of grenades a user can save via ``.save``
-- ``sm_infinite_money``: whether to give infinite money
-- ``sm_allow_noclip``: whether the .noclip command is enabled
-- ``sm_grenade_trajectory_use_player_color``: whether to use cl_color to get nade trajectory color
-- ``sm_practicemode_can_be_started``: whether practicemode can be started
+注意，这并不一定是详尽的。 检查``cfg / sourcemod / practicemode.cfg``以获得更多的cvar，甚至考虑检查源代码以获取最新列表。
 
-### Discord Chat
+- ``sm_practicemode_alphabetize_nades``：以字母顺序而不是id顺序显示投掷物
+- ``sm_practicemode_share_all_nades``：让所有用户编辑所有投掷物，并隐藏创建它们的人
+- ``sm_practicemode_autostart``：是否自动启动练习模式（注意：一些用户报告这个CVAR可能会导致FPS或者崩溃问题，请小心使用）
+- ``sm_practicemode_max_grenades_saved``：用户可以通过.save保存的最大投掷物数量
+- ``sm_infinite_money``：是否给予无限金钱
+- ``sm_allow_noclip``：是否启用.noclip命令
+- ``sm_grenade_trajectory_use_player_color``：是否使用cl_color获取投掷物轨迹颜色
+- ``sm_practicemode_can_be_started``：是否可以启动练习模式
 
-A [Discord](https://discord.gg/zmqEa4keCk) channel is available for general discussion.
+### Discord 聊天室
 
-### Contributions
+一个 [Discord](https://discord.gg/zmqEa4keCk) 频道可用于插件的一般性讨论。
 
-Pull requests are welcome. Please follow the general coding formatting style as much as possible. If you're concerned about a pull request not being merged, please feel free to make an [issue](https://github.com/splewis/csgo-practice-mode/issues) and inquire if the feature is worth adding. I greatly appreciate anyone trying to contribute!
+### 贡献
+
+欢迎pull request。请尽可能地遵循一般的编码格式规范。如果你担心一个pull request没有被合并，请随时提出一个[issue](https://github.com/splewis/csgo-practice-mode/issues)并询问该功能是否值得添加。我非常感谢任何试图作出贡献的人!
