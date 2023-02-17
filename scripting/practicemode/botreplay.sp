@@ -389,7 +389,7 @@ public Action Event_ReplayBotDamageDealtEvent(Event event, const char[] name, bo
   if (IsReplayBot(victim) && IsPlayer(attacker) && BotMimic_IsPlayerMimicing(victim)) {
     int damage = event.GetInt("dmg_health");
     int postDamageHealth = event.GetInt("health");
-    PM_Message(attacker, "对 %N 造成 ---> %d 伤害 (剩余 %d HP)", damage, victim, postDamageHealth);
+    PM_Message(attacker, "对 %N 造成 ---> %d 伤害 (剩余 %d HP)", victim, damage, postDamageHealth);
   }
 
   return Plugin_Continue;
