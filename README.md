@@ -27,7 +27,7 @@ GitHub：Kroytz
 
 ===========================
 
-### Windows端本地服务器懒人整合包（1.3.4 Fix2 版本）：[蓝奏云：点此下载](https://wwz.lanzouv.com/b03jikv0h)
+### Windows端、Linux端服务器懒人整合包（1.3.4.3 Fix 版本）：[蓝奏云：点此下载](https://wwz.lanzouv.com/b03jikv0h)
 
 #### 密码:bg5k
 
