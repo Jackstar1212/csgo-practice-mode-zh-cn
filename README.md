@@ -15,7 +15,7 @@
 ===========================
 ## 致谢列表
 
-b站： @农b_Official, @RoyZ_, @阿蠢子, @冷场王小龙
+b站： @农b_Official, @RoyZ_, @阿蠢子, @冷场王小龙, @idealss
 
 GitHub：Kroytz
 
