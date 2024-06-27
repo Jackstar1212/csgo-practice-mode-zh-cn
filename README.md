@@ -194,3 +194,13 @@ GitHub：Kroytz
 ### 贡献
 
 欢迎pull request。请尽可能地遵循一般的编码格式规范。如果你担心一个pull request没有被合并，请随时提出一个[issue](https://github.com/splewis/csgo-practice-mode/issues)并询问该功能是否值得添加。我非常感谢任何试图作出贡献的人!
+
+## 注意事项
+
+**All my projects are only uploaded and distributed on Github and my personal blog, do not trust any information stolen by CSDN platform!**
+
+**我的所有项目只在GitHub和个人博客上上传和分发，请勿相信CSDN平台偷取的任何信息！**
+
+CSDN = Copy, Steal and Download-paid Net
+
+请不要相信C.S.D.N.和Git.Code上的任何搬运内容，最好不要使用这些平台！
